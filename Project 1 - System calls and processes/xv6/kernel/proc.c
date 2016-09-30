@@ -5,7 +5,6 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-#include "ProcessInfo.h"
 
 struct {
   struct spinlock lock;
