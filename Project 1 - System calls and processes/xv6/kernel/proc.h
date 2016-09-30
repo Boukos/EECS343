@@ -9,6 +9,7 @@
 #define SEG_UDATA 5  // user data+stack
 #define SEG_TSS   6  // this process's task state
 #define NSEGS     7
+#include "ProcessInfo.h"
 
 // Per-CPU state
 struct cpu {
@@ -24,7 +25,6 @@ struct cpu {
   struct cpu *cpu;
   struct proc *proc;           // The currently-running process.
 };
-
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
@@ -75,6 +75,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 };
+
+int getprocs(struct ProcessInfo*);
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
