@@ -92,6 +92,6 @@ sys_uptime(void)
 int
 sys_getprocs(void) {
   struct ProcessInfo *p = NULL;
-  if (argptr(0, (char**)&p, 0) < 0) return -1;
+  if (argptr(1, (char**)&p, 0) < 0) return -1;
   return getprocs(p);
 }
