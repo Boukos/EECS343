@@ -26,7 +26,7 @@ Question 4: What is the address of the object that np is pointing to?
 [0x10e4cc] (e.g. 0xf005ba11)
 
 Question 5: What is the name of the child process that was created? Note: Although you may not believe your own answer at first, you can trust that GDB is not lying to you. The child process will later be renamed and repurposed.
-['\000' <repeats 15 times>] (e.g. ps)
+[sh] (e.g. ps)
 
 Question 6: What is the value of pid?
 [3] (e.g. 10)
