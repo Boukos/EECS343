@@ -447,21 +447,12 @@ procdump(void)
 int
 getprocs(struct ProcessInfo* processInfoTable)
 {
-  // static char *states[] = {
-  // [UNUSED]    "unused",
-  // [EMBRYO]    "embryo",
-  // [SLEEPING]  "sleep ",
-  // [RUNNABLE]  "runble",
-  // [RUNNING]   "run   ",
-  // [ZOMBIE]    "zombie"
-  // };
   struct proc *p;
   int i;
   int result = 0;
   for (p = ptable.proc, i = 0; p < &ptable.proc[NPROC] && i < NPROC; p++, i++) {
     if (p->state == UNUSED) continue;
     result++;
-    if (!processInfoTable) continue;
     processInfoTable[i].pid = p->pid;
     processInfoTable[i].ppid = (i == 0) ? -1 : p->parent->pid;
     processInfoTable[i].state = p->state;
