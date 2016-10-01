@@ -16,13 +16,14 @@ main(void)
   [RUNNING]   "run   ",
   [ZOMBIE]    "zombie"
   };
-  struct ProcessInfo* processInfoTable = (struct ProcessInfo*) malloc((uint)(NPROC * sizeof(struct ProcessInfo)));
+  // struct ProcessInfo* processInfoTable = (struct ProcessInfo*) malloc((uint)(NPROC * sizeof(struct ProcessInfo)));
+  struct ProcessInfo processInfoTable[NPROC];
   int numberOfCurrentProcesses = getprocs(processInfoTable);
   int i;
   int lineNumber;
   for (i = 0, lineNumber = 1; i < numberOfCurrentProcesses; i++, lineNumber++)
     printf(1, "%d  %d  %s  %d  %s\n", lineNumber, processInfoTable[i].ppid, states[processInfoTable[i].state], processInfoTable[i].sz, processInfoTable[i].name);
-  free((void *)processInfoTable);
-  processInfoTable = NULL;
+  // free((void *)processInfoTable);
+  // processInfoTable = NULL;
   exit();
 }

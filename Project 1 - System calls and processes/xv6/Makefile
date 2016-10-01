@@ -54,7 +54,7 @@ OBJDUMP := objdump
 
 # If the makefile can't find QEMU, specify its path here
 # QEMU := /usr/local/bin/qemu-system-i386
-QEMU := /home/software/qemu/bin/qemu-system-i386
+# QEMU := /home/software/qemu/bin/qemu-system-i386
 
 # Try to infer the correct QEMU if not specified
 ifndef QEMU
