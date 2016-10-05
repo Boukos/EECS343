@@ -20,7 +20,7 @@ Question 2: What does np represent? In other words, what do the letters 'n' and 
 [new process] (two words)
 
 Question 3: What does the variable proc represent? Hint: You can find its type by looking at its declaration in kernel/proc.h.
-[Per-process state] (two words)
+[parent process] (two words)
 
 Question 4: What is the address of the object that np is pointing to?
 [0x10e4cc] (e.g. 0xf005ba11)
