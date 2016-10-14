@@ -443,4 +443,14 @@ procdump(void)
   }
 }
 
+void*
+shmem_access(int page_number)
+{
+  return NULL;
+}
 
+int
+shmem_count(int page_number)
+{
+  return 0;
+}
