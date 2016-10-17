@@ -10,6 +10,9 @@ extern char data[];  // defined in data.S
 
 static pde_t *kpgdir;  // for use in scheduler()
 
+int shmems_counter[NSHMEM]; // Record the number of processes that are currently sharing the shared page specified by the page_number argument
+void *shmems_addr[NSHMEM]; // Record the address of the currently active shared page specified by the page_number argument
+
 // Allocate one page table for the machine for the kernel address
 // space for scheduler processes.
 void
@@ -231,7 +234,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   char *mem;
   uint a;
 
-  if(newsz + PGSIZE > USERTOP)
+  if(newsz + PGSIZE * (1 + proc->nshmems) > USERTOP)
     return 0;
   if(newsz < oldsz)
     return oldsz;
@@ -286,12 +289,14 @@ freevm(pde_t *pgdir)
 
   if(pgdir == 0)
     panic("freevm: no pgdir");
-  deallocuvm(pgdir, USERTOP, 0);
+  deallocuvm(pgdir, USERTOP - (1 + proc->nshmems) * PGSIZE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P)
       kfree((char*)PTE_ADDR(pgdir[i]));
   }
   kfree((char*)pgdir);
+  proc->nshmems = 0;
+  for (i = 0; i < NSHMEM; i++) proc->shmems[i] = NULL;
 }
 
 // Given a parent process's page table, create a copy
@@ -318,6 +323,8 @@ copyuvm(pde_t *pgdir, uint sz)
     if(mappages(d, (void*)i, PGSIZE, PADDR(mem), PTE_W|PTE_U) < 0)
       goto bad;
   }
+
+
   return d;
 
 bad:
@@ -363,4 +370,35 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
     va = va0 + PGSIZE;
   }
   return 0;
+}
+
+void
+shmeminit(void)
+{
+  int i;
+  for (i = 0; i < NSHMEM; i++) {
+    shmems_counter[i] = 0;
+    if ((shmems_addr[i] = kalloc()) == 0) panic("shmeminit: unable to allocate shared memory page");
+  }
+}
+
+void*
+shmem_access(int page_number)
+{
+  if (page_number < 0 || page_number >= NSHMEM) return NULL;
+  if (proc->shmems[page_number]) return proc->shmems[page_number];
+  void *newSharedMemoryPageAddr = (void *)(USERTOP - (proc->nshmems + 1) * PGSIZE);
+  if (proc->sz >= (int)newSharedMemoryPageAddr) return NULL;
+  if (mappages(proc->pgdir, newSharedMemoryPageAddr, PGSIZE, PADDR(shmems_addr[page_number]), PTE_W|PTE_U) < 0) return NULL;
+  proc->nshmems++;
+  shmems_counter[page_number]++;
+  proc->shmems[page_number] = newSharedMemoryPageAddr;
+  return newSharedMemoryPageAddr;
+}
+
+int
+shmem_count(int page_number)
+{
+  if (page_number < 0 || page_number >= NSHMEM) return -1;
+  return shmems_counter[page_number];
 }

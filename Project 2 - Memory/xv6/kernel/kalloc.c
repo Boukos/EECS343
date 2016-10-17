@@ -68,4 +68,3 @@ kalloc(void)
   release(&kmem.lock);
   return (char*)r;
 }
-

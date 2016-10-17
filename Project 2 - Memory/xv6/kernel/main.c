@@ -62,6 +62,7 @@ mainc(void)
   cinit();
   sti();           // enable inturrupts
   userinit();      // first user process
+  shmeminit();    // initialize shared memory process
   scheduler();     // start running processes
 }
 

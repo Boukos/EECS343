@@ -67,6 +67,10 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  
+  p->nshmems = 0;
+  int  i;
+  for (i = 0; i < NSHMEM; i++) p->shmems[i] = NULL;
 
   return p;
 }
@@ -156,6 +160,10 @@ fork(void)
   pid = np->pid;
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  np->nshmems = proc->nshmems;
+  for (i = 0; i < NSHMEM; i++) np->shmems[i] = proc->shmems[i];
+
   return pid;
 }
 
@@ -441,16 +449,4 @@ procdump(void)
     }
     cprintf("\n");
   }
-}
-
-void*
-shmem_access(int page_number)
-{
-  return NULL;
-}
-
-int
-shmem_count(int page_number)
-{
-  return 0;
 }

@@ -168,6 +168,7 @@ pde_t*          copyuvm(pde_t*, uint);
 void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
+void            shmeminit(void);
 void*           shmem_access(int);
 int             shmem_count(int);
 
