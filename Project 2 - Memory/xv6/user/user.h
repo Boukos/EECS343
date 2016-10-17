@@ -25,6 +25,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+void* shmem_access(int);
+int shmem_count(int);
 
 // user library functions (ulib.c)
 int stat(char*, struct stat*);
@@ -39,6 +41,7 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+
 
 #endif // _USER_H_
 

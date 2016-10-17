@@ -378,7 +378,8 @@ shmeminit(void)
   int i;
   for (i = 0; i < NSHMEM; i++) {
     shmems_counter[i] = 0;
-    if ((shmems_addr[i] = kalloc()) == 0) panic("shmeminit: unable to allocate shared memory page");
+    if ((shmems_addr[i] = kalloc()) == 0)
+      panic("shmeminit: unable to allocate shared memory page");
   }
 }
 
