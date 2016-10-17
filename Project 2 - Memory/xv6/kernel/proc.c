@@ -162,7 +162,8 @@ fork(void)
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
   np->nshmems = proc->nshmems;
-  for (i = 0; i < NSHMEM; i++) np->shmems[i] = proc->shmems[i];
+  for (i = 0; i < NSHMEM; i++)
+    np->shmems[i] = proc->shmems[i];
 
   return pid;
 }
@@ -216,7 +217,7 @@ int
 wait(void)
 {
   struct proc *p;
-  int havekids, pid;
+  int havekids, pid, i;
 
   acquire(&ptable.lock);
   for(;;){
@@ -231,6 +232,7 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
+        for (i = 0; i < NSHMEM; i++) proc->shmems_child[i] = p->shmems[i];
         freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;

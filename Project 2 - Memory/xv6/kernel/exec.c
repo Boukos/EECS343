@@ -88,10 +88,12 @@ exec(char *path, char **argv)
   proc->tf->eip = elf.entry;  // main
   proc->tf->esp = sp;
   switchuvm(proc);
-  proc->nshmems = 0;
-  for (i = 0; i < NSHMEM; i++) proc->shmems[i] = NULL;
+  // proc->nshmems = 0;
+  // for (i = 0; i < NSHMEM; i++) {
+  //   proc->shmems_child[i] = proc->shmems[i];
+    // proc->shmems[i] = NULL;
+  // }
   freevm(oldpgdir);
-
   return 0;
 
  bad:

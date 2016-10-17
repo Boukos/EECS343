@@ -75,7 +75,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int nshmems;                 // Number of currently active shared memory pages
-  void *shmems[4];             // Shared memory pointer arrays currently
+  void *shmems[NSHMEM];        // Shared memory pointer arrays currently
+  void *shmems_child[NSHMEM];  // Shared memory pointer arrays for Child Process
 };
 
 // Process memory is laid out contiguously, low addresses first:

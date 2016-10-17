@@ -295,8 +295,9 @@ freevm(pde_t *pgdir)
       kfree((char*)PTE_ADDR(pgdir[i]));
   }
   kfree((char*)pgdir);
-  proc->nshmems = 0;
-  for (i = 0; i < NSHMEM; i++) proc->shmems[i] = NULL;
+  for (i = 0; i < NSHMEM; i++)
+    if(proc->shmems_child[i])
+      shmems_counter[i]--;
 }
 
 // Given a parent process's page table, create a copy
@@ -324,7 +325,9 @@ copyuvm(pde_t *pgdir, uint sz)
       goto bad;
   }
 
-
+  for (i = 0; i < NSHMEM; i++)
+    if(proc->shmems[i])
+      shmems_counter[i]++;
   return d;
 
 bad:
