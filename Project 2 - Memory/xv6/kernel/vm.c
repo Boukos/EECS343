@@ -418,6 +418,6 @@ shmem_access(int page_number)
 int
 shmem_count(int page_number)
 {
-  if (page_number < 0 || page_number >= NSHMEM) return -1;
+  if (page_number < 0 || page_number >= NSHMEM || proc->nshmems < 0 || proc->nshmems >= NSHMEM) return -1;
   return shmems_counter[page_number];
 }
