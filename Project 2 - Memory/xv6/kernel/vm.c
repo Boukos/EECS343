@@ -298,8 +298,11 @@ freevm(pde_t *pgdir)
   kfree((char*)pgdir);
   for (i = 0; i < NSHMEM; i++) {
     if(proc->shmems_child[i]) {
-      if (shmems_counter[i] == 1)
+      if (shmems_counter[i] == 1) {
         deallocuvm(pgdir, USERTOP - i * PGSIZE, USERTOP - (i + 1) * PGSIZE);
+        // kfree((char *)shmems_addr[i]);
+        shmems_addr[i] = NULL;
+      }
       shmems_counter[i]--;
     }
   }
@@ -395,7 +398,10 @@ void*
 shmem_access(int page_number)
 {
   if (page_number < 0 || page_number >= NSHMEM) return NULL;
-  if (proc->shmems[page_number]) return proc->shmems[page_number];
+  if (proc->shmems[page_number]) {
+    if (mappages(proc->pgdir, proc->shmems[page_number], PGSIZE, PADDR(shmems_addr[page_number]), PTE_W|PTE_U) < 0) return NULL;
+    return proc->shmems[page_number];
+  }
   void *newSharedMemoryPageAddr = (void *)(USERTOP - (proc->nshmems + 1) * PGSIZE);
   if (proc->sz >= (int)newSharedMemoryPageAddr) return NULL;
   if (mappages(proc->pgdir, newSharedMemoryPageAddr, PGSIZE, PADDR(shmems_addr[page_number]), PTE_W|PTE_U) < 0) return NULL;
