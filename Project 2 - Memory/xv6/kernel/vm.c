@@ -300,8 +300,7 @@ freevm(pde_t *pgdir)
     if(proc->shmems_child[i]) {
       if (shmems_counter[i] == 1) {
         deallocuvm(pgdir, USERTOP - i * PGSIZE, USERTOP - (i + 1) * PGSIZE);
-        // kfree((char *)shmems_addr[i]);
-        shmems_addr[i] = NULL;
+        proc->shmems[i] = NULL;
       }
       shmems_counter[i]--;
     }
