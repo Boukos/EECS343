@@ -400,7 +400,7 @@ shmeminit(void)
 void*
 shmem_access(int page_number)
 {
-  if (page_number < 0 || page_number >= NSHMEM) return NULL;
+  if (page_number < 0 || page_number >= NSHMEM || proc->nshmems < 0 || proc->nshmems >= NSHMEM) return NULL;
   if (proc->shmems[page_number]) {
     if (mappages(proc->pgdir, proc->shmems[page_number], PGSIZE, PADDR(shmems_addr[page_number]), PTE_W|PTE_U) < 0) return NULL;
     return proc->shmems[page_number];
