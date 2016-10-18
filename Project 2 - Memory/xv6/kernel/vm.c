@@ -289,15 +289,20 @@ freevm(pde_t *pgdir)
 
   if(pgdir == 0)
     panic("freevm: no pgdir");
-  deallocuvm(pgdir, USERTOP - (1 + proc->nshmems) * PGSIZE, 0);
+  // deallocuvm(pgdir, USERTOP - (proc->nshmems - 1) * PGSIZE, USERTOP - proc->nshmems * PGSIZE);
+  deallocuvm(pgdir, USERTOP - NSHMEM * PGSIZE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P)
       kfree((char*)PTE_ADDR(pgdir[i]));
   }
   kfree((char*)pgdir);
-  for (i = 0; i < NSHMEM; i++)
-    if(proc->shmems_child[i])
+  for (i = 0; i < NSHMEM; i++) {
+    if(proc->shmems_child[i]) {
+      if (shmems_counter[i] == 1)
+        deallocuvm(pgdir, USERTOP - i * PGSIZE, USERTOP - (i + 1) * PGSIZE);
       shmems_counter[i]--;
+    }
+  }
 }
 
 // Given a parent process's page table, create a copy
