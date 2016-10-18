@@ -162,8 +162,7 @@ fork(void)
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
   np->nshmems = proc->nshmems;
-  for (i = 0; i < NSHMEM; i++)
-    np->shmems[i] = proc->shmems[i];
+  for (i = 0; i < NSHMEM; i++) np->shmems[i] = proc->shmems[i];
 
   return pid;
 }

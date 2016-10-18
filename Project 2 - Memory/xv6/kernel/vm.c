@@ -6,12 +6,12 @@
 #include "proc.h"
 #include "elf.h"
 
+int shmems_counter[NSHMEM]; // Record the number of processes that are currently sharing the shared page specified by the page_number argument
+void *shmems_addr[NSHMEM]; // Record the address of the currently active shared page specified by the page_number argument
+
 extern char data[];  // defined in data.S
 
 static pde_t *kpgdir;  // for use in scheduler()
-
-int shmems_counter[NSHMEM]; // Record the number of processes that are currently sharing the shared page specified by the page_number argument
-void *shmems_addr[NSHMEM]; // Record the address of the currently active shared page specified by the page_number argument
 
 // Allocate one page table for the machine for the kernel address
 // space for scheduler processes.
