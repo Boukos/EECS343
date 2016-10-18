@@ -289,24 +289,32 @@ freevm(pde_t *pgdir)
 
   if(pgdir == 0)
     panic("freevm: no pgdir");
-  // deallocuvm(pgdir, USERTOP - (proc->nshmems - 1) * PGSIZE, USERTOP - proc->nshmems * PGSIZE);
   deallocuvm(pgdir, USERTOP - NSHMEM * PGSIZE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P)
       kfree((char*)PTE_ADDR(pgdir[i]));
   }
   kfree((char*)pgdir);
+}
+
+void
+freeshmems(struct proc *p) {
+  int i;
   for (i = 0; i < NSHMEM; i++) {
-    if(proc->shmems_child[i]) {
-      if (shmems_counter[i] == 1) {
-        deallocuvm(pgdir, USERTOP - i * PGSIZE, USERTOP - (i + 1) * PGSIZE);
-        proc->shmems[i] = NULL;
-      }
+    if(p->shmems[i]) {
+      if (shmems_counter[i] == 1 && shmems_addr[i]) kfree((char*)shmems_addr[i]);
       shmems_counter[i]--;
-    }
+    }    
   }
 }
 
+void
+forkshmems(struct proc *p) {
+  int i;
+  for (i = 0; i < NSHMEM; i++)
+    if(proc->shmems[i])
+      shmems_counter[i]++;
+}
 // Given a parent process's page table, create a copy
 // of it for a child.
 pde_t*
@@ -332,9 +340,6 @@ copyuvm(pde_t *pgdir, uint sz)
       goto bad;
   }
 
-  for (i = 0; i < NSHMEM; i++)
-    if(proc->shmems[i])
-      shmems_counter[i]++;
   return d;
 
 bad:
@@ -388,8 +393,7 @@ shmeminit(void)
   int i;
   for (i = 0; i < NSHMEM; i++) {
     shmems_counter[i] = 0;
-    if ((shmems_addr[i] = kalloc()) == 0)
-      panic("shmeminit: unable to allocate shared memory page");
+    shmems_addr[i] = NULL;
   }
 }
 
@@ -403,6 +407,7 @@ shmem_access(int page_number)
   }
   void *newSharedMemoryPageAddr = (void *)(USERTOP - (proc->nshmems + 1) * PGSIZE);
   if (proc->sz >= (int)newSharedMemoryPageAddr) return NULL;
+  if ((shmems_addr[page_number] = kalloc()) == 0) panic("shmem_access: unable to allocate physical shared memory page");
   if (mappages(proc->pgdir, newSharedMemoryPageAddr, PGSIZE, PADDR(shmems_addr[page_number]), PTE_W|PTE_U) < 0) return NULL;
   proc->nshmems++;
   shmems_counter[page_number]++;

@@ -163,7 +163,7 @@ fork(void)
 
   np->nshmems = proc->nshmems;
   for (i = 0; i < NSHMEM; i++) np->shmems[i] = proc->shmems[i];
-
+  forkshmems(np);
   return pid;
 }
 
@@ -204,6 +204,8 @@ exit(void)
     }
   }
 
+  freeshmems(proc);
+
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   sched();
@@ -216,7 +218,7 @@ int
 wait(void)
 {
   struct proc *p;
-  int havekids, pid, i;
+  int havekids, pid;
 
   acquire(&ptable.lock);
   for(;;){
@@ -231,7 +233,6 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        for (i = 0; i < NSHMEM; i++) proc->shmems_child[i] = p->shmems[i];
         freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;
