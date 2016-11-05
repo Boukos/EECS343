@@ -16,10 +16,10 @@ USER_PROGS := \
 	tester\
 	wc\
 	zombie\
-	usertests\
-	badclone\
-	clone\
-	join\
+	# usertests\
+	# badclone\
+	# clone\
+	# join\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
