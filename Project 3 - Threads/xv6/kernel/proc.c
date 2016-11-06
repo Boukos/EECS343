@@ -443,4 +443,9 @@ procdump(void)
   }
 }
 
-
+int clone(void(*fcn)(void*), void* arg, void* stack) {
+  return 0;
+}
+int join(int pid) {
+  return 0;
+}
