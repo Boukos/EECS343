@@ -189,8 +189,9 @@ exit(void)
   wakeup1(proc->parent);
 
   // Pass abandoned children to init.
+  // 1) clone: Requirement 11
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->parent == proc){
+    if(proc->isThread == 0 && p->parent == proc){
       p->parent = initproc;
       if(p->state == ZOMBIE)
         wakeup1(initproc);
@@ -207,6 +208,7 @@ exit(void)
 // Return -1 if this process has no children.
 /**
 3) side effects
+
 Requirements (and hints)
 
 Here is a list of specific requirements related to the wait syscall:
@@ -224,7 +226,7 @@ wait(void)
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->isThread == 1 || p->parent != proc) // Requirement 01
+      if(p->isThread == 1 || p->parent != proc) // 3) side effects: Requirement 01
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -453,6 +455,8 @@ procdump(void)
 }
 
 /**
+1) clone
+
 Requirements (and hints)
 
 Here is a list of specific requirements related to the clone syscall:
@@ -492,6 +496,11 @@ Here is a list of specific requirements related to the clone syscall:
 int
 clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 {
+  // BEGIN: Prequirement 10
+  if ((uint) stack % PGSIZE != 0)
+    return -1;
+  // END: Prequirement 10
+
   int i, tid;
   struct proc *thread;
   
@@ -503,7 +512,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 
   // BEGIN: Prequirement 09
   thread->parent = proc;
-  while (thread->parent->isThread)
+  while (thread->parent->isThread == 1)
     thread->parent = thread->parent->parent;
   // END: Prequirement 09
   
