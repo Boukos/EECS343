@@ -443,9 +443,35 @@ procdump(void)
   }
 }
 
-int clone(void(*fcn)(void*), void* arg, void* stack) {
-  return 0;
+int
+clone(void(*fcn)(void*), void* arg, void* stack)
+{
+  int i, tid;
+  struct proc *thread;
+
+  if ((thread = allocproc()) == 0)
+    return -1;
+  
+  thread->pgdir = proc->pgdir;
+  thread->sz = proc->sz;
+  thread->parent = proc;
+  *(thread->tf) = *(proc->tf);
+
+  thread->tf->eax = 0;
+
+  for (i = 0; i < NOFILE; i++)
+    if (proc->ofile[i])
+      thread->ofile[i] = filedup(proc->ofile[i]);
+  thread->cwd = idup(proc->cwd);
+
+  tid = thread->pid;
+  thread->state = RUNNABLE;
+  safestrcpy(thread->name, proc->name, sizeof(proc->name));
+  return tid;
 }
-int join(int pid) {
+
+int
+join(int pid)
+{
   return 0;
 }
