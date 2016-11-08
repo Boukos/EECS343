@@ -43,7 +43,7 @@ allocproc(void)
   return 0;
 
 found:
-  p->isThread = false;
+  p->isThread = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   release(&ptable.lock);
@@ -205,6 +205,14 @@ exit(void)
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
+/**
+3) side effects
+Requirements (and hints)
+
+Here is a list of specific requirements related to the wait syscall:
+
+01 The wait syscall must only wait for child processes, not child threads.
+**/
 int
 wait(void)
 {
@@ -216,7 +224,7 @@ wait(void)
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != proc)
+      if(p->isThread == 1 || p->parent != proc) // Requirement 01
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -445,6 +453,8 @@ procdump(void)
 }
 
 /**
+Requirements (and hints)
+
 Here is a list of specific requirements related to the clone syscall:
 
 01. The clone syscall must use the exact function signature that we have provided above.
@@ -492,14 +502,15 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   thread->sz = proc->sz;
 
   // BEGIN: Prequirement 09
-  for (i = proc; i->isThread; i = i->parent)
-  thread->parent = i;
+  thread->parent = proc;
+  while (thread->parent->isThread)
+    thread->parent = thread->parent->parent;
   // END: Prequirement 09
   
-  thread->isThread = true;
+  thread->isThread = 1;
   
   *(thread->tf) = *(proc->tf);
-  thread->tf->eip = fcn; // Prequirement 04
+  thread->tf->eip = (uint)fcn; // Prequirement 04
   
   thread->tf->eax = 0;
 
