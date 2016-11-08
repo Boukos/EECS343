@@ -480,28 +480,35 @@ Here is a list of specific requirements related to the clone syscall:
 **/
 
 int
-clone(void(*fcn)(void*), void* arg, void* stack)
+clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 {
   int i, tid;
   struct proc *thread;
   
-  if ((thread = allocproc()) == 0)
+  if ((thread = allocproc()) == 0) // Prequirement 08
     return -1;
   
-  thread->pgdir = proc->pgdir;
+  thread->pgdir = proc->pgdir; // Prequirement 02
   thread->sz = proc->sz;
-  thread->parent = proc;
+
+  // BEGIN: Prequirement 09
+  for (i = proc; i->isThread; i = i->parent)
+  thread->parent = i;
+  // END: Prequirement 09
+  
   thread->isThread = true;
   
   *(thread->tf) = *(proc->tf);
-  thread->tf->eip = fcn;
+  thread->tf->eip = fcn; // Prequirement 04
+  
   thread->tf->eax = 0;
 
-
+  // BEGIN: Prequirement 03
   for (i = 0; i < NOFILE; i++)
     if (proc->ofile[i])
       thread->ofile[i] = filedup(proc->ofile[i]);
   thread->cwd = idup(proc->cwd);
+  // END: Prequirement 03
   
   tid = thread->pid;
   thread->state = RUNNABLE;
