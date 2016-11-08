@@ -43,6 +43,7 @@ allocproc(void)
   return 0;
 
 found:
+  p->isThread = false;
   p->state = EMBRYO;
   p->pid = nextpid++;
   release(&ptable.lock);
@@ -443,8 +444,67 @@ procdump(void)
   }
 }
 
+/**
+Here is a list of specific requirements related to the clone syscall:
+
+01. The clone syscall must use the exact function signature that we have provided above.
+
+02. The clone syscall must create a new thread of execution with the same address space as the parent.
+
+03. The new thread must get a copy of the parent's file descriptors.
+    Hint: see fork.
+
+04. The new thread must begin execution in the function pointed to by fcn.
+    Hint: what register keeps track of the current instruction being executed?
+
+05. The new thread must use the page pointed to by stack as its user stack.
+
+06. The pointer arg will be passed to the function (specified by fcn) as an argument.
+    Hint: review the calling convention.  When a function is called, where on the stack will it expect to find an argument that was passed in?
+
+07. The function (specified by fcn) will have a fake return address of 0xffffffff.
+    Hint: where on the stack does a function expect to find the return address?
+
+08. Each thread will have a unique pid.
+
+09. The parent field of the thread's struct proc will point to the parent process (aka the main thread).  If a thread spawns more threads, their parent field will point to the main thread (not to the thread that spawned them).
+
+10. The clone syscall must return the pid of the new thread to the caller.  However, if a bad argument is passed to clone, or generally if anything goes wrong, clone must return -1 to the caller to indicate failure.
+    Hint: clone should check that the stack argument it receives is page-aligned and that the full page has been allocated to the process.
+
+11. In a multi-threaded process, when a thread exits, all other threads must be able to continue running.  However, when the main thread (parent process) exits, all of its children threads must be killed and cleaned up.
+    Hint: the exit() code will have to change.  Also, it may be helpful to add a flag to the struct proc indicating whether this entry is a child thread or the main thread.
+
+12. In a multi-threaded process, multiple threads must be able to grow the address space without causing race-related errors. 
+    Hint: walk through the code path for the sbrk syscall.  You will need to use a lock in there somewhere.
+**/
+
 int
 clone(void(*fcn)(void*), void* arg, void* stack)
 {
-  return 0;
+  int i, tid;
+  struct proc *thread;
+  
+  if ((thread = allocproc()) == 0)
+    return -1;
+  
+  thread->pgdir = proc->pgdir;
+  thread->sz = proc->sz;
+  thread->parent = proc;
+  thread->isThread = true;
+  
+  *(thread->tf) = *(proc->tf);
+  thread->tf->eip = fcn;
+  thread->tf->eax = 0;
+
+
+  for (i = 0; i < NOFILE; i++)
+    if (proc->ofile[i])
+      thread->ofile[i] = filedup(proc->ofile[i]);
+  thread->cwd = idup(proc->cwd);
+  
+  tid = thread->pid;
+  thread->state = RUNNABLE;
+  safestrcpy(thread->name, proc->name, sizeof(proc->name));
+  return tid;
 }
