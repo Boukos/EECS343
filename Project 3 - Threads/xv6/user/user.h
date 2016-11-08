@@ -26,7 +26,6 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int clone(void(*fcn)(void*), void* arg, void* stack);
-int join(int pid);
 
 // user library functions (ulib.c)
 int stat(char*, struct stat*);
@@ -43,3 +42,4 @@ void free(void*);
 int atoi(const char*);
 
 #endif // _USER_H_
+
