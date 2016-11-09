@@ -517,7 +517,12 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // END: Prequirement 09
   
   thread->isThread = 1;
-  
+
+  void *ustackRet = stack + PGSIZE - sizeof(void *);
+  void *ustackArg = stack + PGSIZE - 2 * sizeof(void *);
+  *((uint*)ustackRet) = 0xffffffff;
+
+
   *(thread->tf) = *(proc->tf);
   thread->tf->eip = (uint)fcn; // Prequirement 04
   
