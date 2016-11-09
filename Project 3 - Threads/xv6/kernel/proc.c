@@ -463,17 +463,17 @@ Here is a list of specific requirements related to the clone syscall:
 
 01. The clone syscall must use the exact function signature that we have provided above.
 
-02. The clone syscall must create a new thread of execution with the same address space as the parent.
+02. The clone syscall must create a new thread of execution with the same address space as the parent. (?)
 
-03. The new thread must get a copy of the parent's file descriptors.
+03. The new thread must get a copy of the parent's file descriptors. (?)
     Hint: see fork.
 
 04. The new thread must begin execution in the function pointed to by fcn.
     Hint: what register keeps track of the current instruction being executed?
 
-05. The new thread must use the page pointed to by stack as its user stack.
+05. The new thread must use the page pointed to by stack as its user stack. (?)
 
-06. The pointer arg will be passed to the function (specified by fcn) as an argument.
+06. The pointer arg will be passed to the function (specified by fcn) as an argument. (?)
     Hint: review the calling convention.  When a function is called, where on the stack will it expect to find an argument that was passed in?
 
 07. The function (specified by fcn) will have a fake return address of 0xffffffff.
