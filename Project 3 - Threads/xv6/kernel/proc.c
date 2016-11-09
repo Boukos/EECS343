@@ -518,12 +518,13 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   
   thread->isThread = 1;
 
-  void *ustackRet = stack + PGSIZE - sizeof(void *);
-  void *ustackArg = stack + PGSIZE - 2 * sizeof(void *);
-  *((uint*)ustackRet) = 0xffffffff;
-
-
   *(thread->tf) = *(proc->tf);
+  *((uint*)stack) = 0xffffffff;
+  *((void**)(stack + 4)) = arg;
+  thread->tf->esp = (uint)stack;
+  if (copyout(proc->pgdir, thread->tf->esp, (void*)stack, (uint)PGSIZE) < 0)
+    return -1;
+
   thread->tf->eip = (uint)fcn; // Prequirement 04
   
   thread->tf->eax = 0;
