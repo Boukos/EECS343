@@ -527,7 +527,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
     return -1;
   // END: Prequirement 05
   thread->tf->eip = (uint)fcn; // Prequirement 04
-  thread->tf->ebp = arg;
+  // thread->tf->ebp = arg;
   thread->tf->eax = 0;
 
   // BEGIN: Prequirement 03
