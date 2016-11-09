@@ -497,7 +497,7 @@ int
 clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 {
   // BEGIN: Prequirement 10
-  if ((uint) stack % PGSIZE != 0)
+  if ((uint) stack % PGSIZE != 0) // Prequirement 10
     return -1;
   // END: Prequirement 10
 
@@ -516,17 +516,18 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
     thread->parent = thread->parent->parent;
   // END: Prequirement 09
   
-  thread->isThread = 1;
-
+  thread->isThread = 1; // Prequirement 11
+  
   *(thread->tf) = *(proc->tf);
-  *((uint*)stack) = 0xffffffff;
+  // BEGIN: Prequirement 05
+  *((uint*)stack) = 0xffffffff; // Prequirement 07
   *((void**)(stack + 4)) = arg;
   thread->tf->esp = (uint)stack;
   if (copyout(proc->pgdir, thread->tf->esp, (void*)stack, (uint)PGSIZE) < 0)
     return -1;
-
+  // END: Prequirement 05
   thread->tf->eip = (uint)fcn; // Prequirement 04
-  
+  thread->tf->ebp = arg;
   thread->tf->eax = 0;
 
   // BEGIN: Prequirement 03
