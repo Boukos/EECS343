@@ -37,8 +37,6 @@ USER_PROGS := \
 	race\
 	thread2\
 
-
-
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
 # user library files
