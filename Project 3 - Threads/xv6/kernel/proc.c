@@ -565,6 +565,55 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 int
 join(int pid) // Prequirement 01
 {
-  
-  return 0;
+  if (proc->pid == pid) return -1; // Prequirement 03
+
+  struct proc *p;
+  int havekids;
+
+  acquire(&ptable.lock);
+  for (;;) {
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->pid == pid) {
+        // BEGIN: Prequirement 04
+        if (p->isThread == 0) {
+          release(&ptable.lock);
+          return -1;
+        }
+        // END: Prequirement 04
+
+        // BEGIN: Prequirement 05
+        if (p->pgdir != proc->pgdir) {
+          release(&ptable.lock);
+          return -1;          
+        }
+        // END: Prequirement 05
+
+        // BEGIN: Prequirement 05
+        if (p->parent != proc->parent) {
+          release(&ptable.lock);
+          return -1;           
+        }
+        // END: Prequirement 05
+
+        havekids = 1;
+        if (p->state == ZOMBIE) {
+          kfree(p->kstack);
+          p->kstack = 0;
+          p->pid = 0;
+          p->parent = 0;
+          p->name[0] = 0;
+          p->killed = 0;
+          release(&ptable.lock);
+          return pid;
+        }      
+      }
+    }
+    if (!havekids || proc->killed) {
+      release(&ptable.lock);
+      return -1;         
+    }
+    sleep(proc, &ptable.lock);
+  }
+  return pid;
 }
