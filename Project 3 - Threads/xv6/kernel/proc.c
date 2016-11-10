@@ -506,7 +506,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   
   if ((thread = allocproc()) == 0) // Prequirement 08
     return -1;
-  
+  thread->isThread = 1; // Prequirement 11
   thread->pgdir = proc->pgdir; // Prequirement 02
   thread->sz = proc->sz;
 
@@ -515,8 +515,6 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   while (thread->parent->isThread == 1)
     thread->parent = thread->parent->parent;
   // END: Prequirement 09
-  
-  thread->isThread = 1; // Prequirement 11
   
   *(thread->tf) = *(proc->tf);
   // BEGIN: Prequirement 05
@@ -595,6 +593,7 @@ join(int pid) // Prequirement 01
         if (p->parent != proc->parent) {
           cprintf("p->parent != proc->parent\n");
           cprintf("p->parent = %d\tproc->parent = %d\n", p->parent, proc->parent);
+          cprintf("p->parent->isThread = %d\tproc->parent->isThread = %d\n", p->parent->isThread, proc->parent->isThread);
           release(&ptable.lock);
           return -1;           
         }
