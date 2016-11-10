@@ -542,3 +542,28 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   safestrcpy(thread->name, proc->name, sizeof(proc->name));
   return tid;
 }
+
+// 2) join
+
+// Requirements (and hints)
+
+// Here is a list of specific requirements related to the join syscall:
+
+// 01. The join syscall must use the exact function signature that we have provided above.
+
+// 02. The join syscall must wait for the thread specified by pid to complete.
+
+// 03. The join syscall must return the pid of the completed thread.  However, if the argument is invalid or generally if anything goes wrong, the syscall must return -1 to indicate failure.  Some notes on what constitutes an invalid argument:
+
+// 04. Calling join on a main thread (a process) should result in a return value of -1.
+
+// 05. Calling join on a thread belonging to a different thread group than the caller should also result in a return value of -1.
+
+// 06. The join syscall must clean up the process table entry that was being used by the thread.
+//     Hint: see the how wait does this.  However, be aware that wait cleans up some things that join must NOT clean up.
+
+int
+join(int pid)
+{
+  return 0;
+}

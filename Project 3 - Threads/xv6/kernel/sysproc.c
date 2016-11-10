@@ -103,7 +103,10 @@ sys_clone(void)
 }
 
 int
-join(void)
+sys_join(void)
 {
-  
+  // int join(int pid)
+  int pid;
+  if (argint(0, &pid)) return -1;
+  return join(pid); 
 }
