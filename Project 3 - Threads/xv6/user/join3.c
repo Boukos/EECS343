@@ -29,8 +29,8 @@ main(int argc, char *argv[])
    }
    assert(fork_pid > 0);
 
-   void *join_stack;
-   int join_pid = join(&join_stack);
+   // void *join_stack;
+   int join_pid = join(fork_pid);
    assert(join_pid == -1);
 
    printf(1, "TEST PASSED\n");

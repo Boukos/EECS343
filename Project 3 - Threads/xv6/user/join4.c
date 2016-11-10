@@ -37,10 +37,11 @@ main(int argc, char *argv[])
    sleep(250);
    assert(wait() == -1);
 
-   void *join_stack;
-   int join_pid = join(&join_stack);
+   // void *join_stack;
+   // int join_pid = join(&join_stack);
+   int join_pid = join(clone_pid);
    assert(join_pid == clone_pid);
-   assert(stack == join_stack);
+   // assert(stack == join_stack);
    assert(global == 2);
 
    printf(1, "TEST PASSED\n");

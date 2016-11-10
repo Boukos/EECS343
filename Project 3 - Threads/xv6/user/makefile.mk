@@ -22,11 +22,11 @@ USER_PROGS := \
 	clone2\
 	clone3\
 	join\
-	
-	# join2\
-	# join3\
-	# join4\
-	# cond\	
+	join2\
+	join3\
+	join4\
+
+	# cond\
 	# multi\
 	# size\
 	# thread\
