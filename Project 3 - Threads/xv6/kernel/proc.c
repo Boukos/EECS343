@@ -47,6 +47,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   release(&ptable.lock);
+  
+  // initlock(&p.lock, "proc"); // 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
   if((p->kstack = kalloc()) == 0){
