@@ -563,7 +563,8 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 //     Hint: see the how wait does this.  However, be aware that wait cleans up some things that join must NOT clean up.
 
 int
-join(int pid)
+join(int pid) // Prequirement 01
 {
+  
   return 0;
 }
