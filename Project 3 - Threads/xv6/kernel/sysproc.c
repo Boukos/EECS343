@@ -101,3 +101,9 @@ sys_clone(void)
   if (argptr(2, (char**)&stack, 2 * PGSIZE) < 0) return -1;
   return clone(fcn, arg, stack);
 }
+
+int
+join(void)
+{
+  
+}
