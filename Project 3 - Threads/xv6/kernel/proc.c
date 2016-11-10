@@ -506,6 +506,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   
   if ((thread = allocproc()) == 0) // Prequirement 08
     return -1;
+  *(thread->tf) = *(proc->tf);
   thread->isThread = 1; // Prequirement 11
   thread->pgdir = proc->pgdir; // Prequirement 02
   thread->sz = proc->sz;
@@ -516,7 +517,6 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
     thread->parent = thread->parent->parent;
   // END: Prequirement 09
   
-  *(thread->tf) = *(proc->tf);
   // BEGIN: Prequirement 05
   *((uint*)stack) = 0xffffffff; // Prequirement 07
   *((void**)(stack + 4)) = arg;
