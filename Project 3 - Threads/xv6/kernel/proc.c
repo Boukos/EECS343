@@ -511,7 +511,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // BEGIN: Prequirement 09
   for (p = proc; p->isThread == 1; p = p->parent) ;
   thread->parent = p;
-  while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
+  // while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
   // cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc);
   // cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);
   // END: Prequirement 09
