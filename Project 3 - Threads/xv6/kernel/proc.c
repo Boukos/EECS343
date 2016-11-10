@@ -502,7 +502,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // END: Prequirement 10
 
   int i, tid;
-  struct proc *thread;
+  struct proc *thread, *p;
   
   if ((thread = allocproc()) == 0) // Prequirement 08
     return -1;
@@ -512,9 +512,11 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   thread->sz = proc->sz;
 
   // BEGIN: Prequirement 09
-  thread->parent = proc;
-  while (thread->parent->isThread == 1)
-    thread->parent = thread->parent->parent;
+  for (p = proc; p->isThread == 1; p = p->parent) ;
+  thread->parent = p;
+  while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
+  cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc->parent);
+  cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);
   // END: Prequirement 09
   
   // BEGIN: Prequirement 05
