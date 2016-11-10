@@ -577,6 +577,7 @@ join(int pid) // Prequirement 01
       if (p->pid == pid) {
         // BEGIN: Prequirement 04
         if (p->isThread == 0) {
+          // cprintf("p->isThread == 0\n");
           release(&ptable.lock);
           return -1;
         }
@@ -584,6 +585,7 @@ join(int pid) // Prequirement 01
 
         // BEGIN: Prequirement 05
         if (p->pgdir != proc->pgdir) {
+          // cprintf("p->pgdir != proc->pgdir\n");
           release(&ptable.lock);
           return -1;          
         }
@@ -591,6 +593,8 @@ join(int pid) // Prequirement 01
 
         // BEGIN: Prequirement 05
         if (p->parent != proc->parent) {
+          cprintf("p->parent != proc->parent\n");
+          cprintf("p->parent = %d\tproc->parent = %d\n", p->parent, proc->parent);
           release(&ptable.lock);
           return -1;           
         }
@@ -612,6 +616,7 @@ join(int pid) // Prequirement 01
       }
     }
     if (!havekids || proc->killed) {
+      // cprintf("!havekids || proc->killed\n");
       release(&ptable.lock);
       return -1;         
     }
