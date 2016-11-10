@@ -496,16 +496,13 @@ Here is a list of specific requirements related to the clone syscall:
 int
 clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
 {
-  // BEGIN: Prequirement 10
-  if ((uint) stack % PGSIZE != 0) // Prequirement 10
-    return -1;
-  // END: Prequirement 10
+  if ((uint) stack % PGSIZE != 0) return -1; // Prequirement 10
 
   int i, tid;
   struct proc *thread, *p;
   
-  if ((thread = allocproc()) == 0) // Prequirement 08
-    return -1;
+  if ((thread = allocproc()) == 0) return -1; // Prequirement 08
+
   *(thread->tf) = *(proc->tf);
   thread->isThread = 1; // Prequirement 11
   thread->pgdir = proc->pgdir; // Prequirement 02
@@ -515,16 +512,15 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   for (p = proc; p->isThread == 1; p = p->parent) ;
   thread->parent = p;
   while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
-  cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc->parent);
-  cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);
+  // cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc);
+  // cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);
   // END: Prequirement 09
   
   // BEGIN: Prequirement 05
   *((uint*)stack) = 0xffffffff; // Prequirement 07
   *((void**)(stack + 4)) = arg;
   thread->tf->esp = (uint)stack;
-  if (copyout(proc->pgdir, thread->tf->esp, (void*)stack, (uint)PGSIZE) < 0)
-    return -1;
+  if (copyout(proc->pgdir, thread->tf->esp, (void*)stack, (uint)PGSIZE) < 0) return -1;
   // END: Prequirement 05
   thread->tf->eip = (uint)fcn; // Prequirement 04
   // thread->tf->ebp = arg;
@@ -592,10 +588,10 @@ join(int pid) // Prequirement 01
         // END: Prequirement 05
 
         // BEGIN: Prequirement 05
-        if (p->parent != proc->parent) {
-          cprintf("p->parent != proc->parent\n");
-          cprintf("p->parent = %d\tproc->parent = %d\n", p->parent, proc->parent);
-          cprintf("p->parent->isThread = %d\tproc->parent->isThread = %d\n", p->parent->isThread, proc->parent->isThread);
+        if (proc->isThread == 1 && p->parent != proc->parent) {
+          // cprintf("p->parent != proc->parent\n");
+          // cprintf("p->parent = %d\tproc->parent = %d\n", p->parent, proc->parent);
+          // cprintf("p->parent->isThread = %d\tproc->parent->isThread = %d\n", p->parent->isThread, proc->parent->isThread);
           release(&ptable.lock);
           return -1;           
         }
