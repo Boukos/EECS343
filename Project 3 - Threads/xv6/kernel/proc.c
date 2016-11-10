@@ -597,7 +597,8 @@ join(int pid) // Prequirement 01
         // END: Prequirement 05
 
         havekids = 1;
-        if (p->state == ZOMBIE) {
+
+        if (p->state == ZOMBIE) { // Prequirement 03
           kfree(p->kstack);
           p->kstack = 0;
           p->state = UNUSED;
