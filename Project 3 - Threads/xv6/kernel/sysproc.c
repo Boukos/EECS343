@@ -96,8 +96,8 @@ sys_clone(void)
   void (*fcn)(void*);
   void *arg;
   void *stack;
-  if (argptr(0, (char**)&fcn, sizeof(void*)) < 0) return -1;
-  if (argptr(1, (char**)&arg, sizeof(void*)) < 0) return -1;
+  if (argptr(0, (char**)&fcn, 4) < 0) return -1;
+  if (argptr(1, (char**)&arg, 4) < 0) return -1;
   if (argptr(2, (char**)&stack, 2 * PGSIZE) < 0) return -1;
   return clone(fcn, arg, stack);
 }
