@@ -21,19 +21,19 @@ USER_PROGS := \
 	clone\
 	clone2\
 	clone3\
+	join\
 	
-	# cond\
+	# join2\
+	# join3\
 	# join4\
+	# cond\	
 	# multi\
 	# size\
 	# thread\
 	# cond2\
-	# join2\
-	# join\
 	# noexit\
 	# stack\
 	# cond3\
-	# join3\
 	# locks\
 	# race\
 	# thread2\
