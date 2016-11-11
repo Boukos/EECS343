@@ -48,10 +48,7 @@ found:
   p->pid = nextpid++;
   release(&ptable.lock);
   
-  // BEGIN: 1) clone: Requirement 12
-  initlock(&(p->lock), "proc");
-  p->parentlock = &(p->lock);
-  // END: 1) clone: Requirement 12
+  initlock(&p->lock, "proc"); // 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
   if((p->kstack = kalloc()) == 0){
@@ -112,23 +109,23 @@ userinit(void)
 int
 growproc(int n)
 {
-  acquire(proc->parentlock);
+  acquire(&proc->parent->lock);
   uint sz;
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0) {
-      release(proc->parentlock);
+      release(&proc->parent->lock);
       return -1;
     }
   } else if(n < 0){
     if((sz = deallocuvm(proc->pgdir, sz, sz + n)) == 0) {
-      release(proc->parentlock);
+      release(&proc->parent->lock);
       return -1;
     }
   }
   proc->sz = sz;
   switchuvm(proc);
-  release(proc->parentlock);
+  release(&proc->parent->lock);
   return 0;
 }
 
@@ -521,17 +518,18 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // BEGIN: Prequirement 09
   for (p = proc; p->isThread == 1; p = p->parent) ;
   thread->parent = p;
-  thread->parentlock = &(p->lock); // 1) clone: Requirement 12
+  // thread->parentlock = &(p->lock); // 1) clone: Requirement 12
   // while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
   // cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc);
   // cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);
   // END: Prequirement 09
   
   // BEGIN: Prequirement 05
-  *((uint*)stack) = 0xffffffff; // Prequirement 07
-  *((void**)(stack + 4)) = arg;
+  *((uint*)(stack + PGSIZE - 8)) = 0xffffffff; // Prequirement 07
+  *((void**)(stack + PGSIZE - 4)) = arg;
   thread->tf->esp = (uint)stack;
   if (copyout(proc->pgdir, thread->tf->esp, (void*)stack, (uint)PGSIZE) < 0) return -1;
+  thread->tf->esp = (uint)(stack + PGSIZE - 8);
   // END: Prequirement 05
   thread->tf->eip = (uint)fcn; // Prequirement 04
   // thread->tf->ebp = arg;

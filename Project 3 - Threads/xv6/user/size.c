@@ -6,12 +6,12 @@
 #define NULL ((void*)0)
 
 #define PGSIZE (4096)
+#define num_threads 30
 
 int ppid;
 int global = 0;
 unsigned int size = 0;
 lock_t lock, lock2;
-int num_threads = 30;
 
 
 #define assert(x) if (x) {} else { \
@@ -37,10 +37,12 @@ main(int argc, char *argv[])
    lock_acquire(&lock);
    lock_acquire(&lock2);
 
+   int tids[num_threads];
    int i;
    for (i = 0; i < num_threads; i++) {
       int thread_pid = thread_create(worker, arg_ptr);
       assert(thread_pid > 0);
+      tids[i] = thread_pid;
    }
 
    size = (unsigned int)sbrk(0);
@@ -65,8 +67,9 @@ main(int argc, char *argv[])
 
 
    for (i = 0; i < num_threads; i++) {
-      int join_pid = thread_join();
+      int join_pid = thread_join(tids[i]);
       assert(join_pid > 0);
+      assert(tids[i] == join_pid);
    }
 
    printf(1, "TEST PASSED\n");
@@ -87,4 +90,3 @@ worker(void *arg_ptr) {
 
    exit();
 }
-

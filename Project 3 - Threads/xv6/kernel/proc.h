@@ -77,7 +77,6 @@ struct proc {
   char name[16];               // Process name (debugging)
   int isThread;                // Process = 0 and Thread = 1
   struct spinlock lock;        // mutex
-  struct spinlock *parentlock; // parent mutex
 };
 
 // Process memory is laid out contiguously, low addresses first:

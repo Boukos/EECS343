@@ -3,8 +3,6 @@
 
 struct stat;
 
-typedef uint lock_t;
-
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));

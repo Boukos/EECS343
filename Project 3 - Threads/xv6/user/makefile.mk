@@ -27,16 +27,18 @@ USER_PROGS := \
 	join4\
 	thread\
 	thread2\
+	locks\
+	stack\
+	multi\
+	noexit\
+	size\
 
 	# cond\
-	# multi\
-	# size\
 	
 	# cond2\
-	# noexit\
-	# stack\
+	
+	
 	# cond3\
-	# locks\
 	# race\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))

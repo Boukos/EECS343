@@ -92,7 +92,7 @@ sys_uptime(void)
 int
 sys_clone(void)
 { 
-  // int clone(void(*fcn)(void*), void* arg, void* stack)
+  // int clone(void(*fcn)(void*), void* arg, void* stack);
   void (*fcn)(void*);
   void *arg;
   void *stack;
@@ -105,8 +105,29 @@ sys_clone(void)
 int
 sys_join(void)
 {
-  // int join(int pid)
+  // int join(int pid);
   int pid;
   if (argint(0, &pid)) return -1;
   return join(pid); 
 }
+
+// BEGIN: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
+int
+sys_cv_wait(void)
+{
+  // void cv_wait(cond_t* conditionVariable, lock_t* lock);
+  // cond_t* conditionVariable;
+  // lock_t* lock;
+  return 0;
+}
+// END: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
+
+// BEGIN: Wake the threads that are waiting on conditionVariable.
+int
+sys_cv_signal(void)
+{
+  // void cv_signal(cond_t* conditionVariable);
+  // cond_t* conditionVariable;
+  return 0;
+}
+// END: Wake the threads that are waiting on conditionVariable.

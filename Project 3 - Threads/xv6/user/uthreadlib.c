@@ -25,14 +25,14 @@ thread_join(int pid)
 // BEGIN: Acquires the lock pointed to by lock.  If the lock is already held, spin until it becomes available.
 void lock_acquire(lock_t* lock)
 {
-  while (xchg(lock, 1) != 0) ;
+  while (xchg((uint*)lock, 1) != 0) ;
 }
 // END: Acquires the lock pointed to by lock.  If the lock is already held, spin until it becomes available.
 
 // BEGIN: Release the lock pointed to by lock.
 void lock_release(lock_t* lock)
 {
-  xchg(lock, 0);
+  xchg((uint*)lock, 0);
 }
 // END: Release the lock pointed to by lock.
 
@@ -42,17 +42,3 @@ void lock_init(lock_t* lock)
   *lock = 0;
 }
 // END: Initialize the lock pointed to by lock.
-
-// BEGIN: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
-// void cv_wait(cond_t* conditionVariable, lock_t* lock)
-// {
-
-// }
-// END: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
-
-// BEGIN: Wake the threads that are waiting on conditionVariable.
-// void cv_signal(cond_t* conditionVariable)
-// {
-
-// }
-// END: Wake the threads that are waiting on conditionVariable.
