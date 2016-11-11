@@ -32,7 +32,7 @@ pinit(void)
 static struct proc*
 allocproc(void)
 {
-  struct proc *p;
+  struct proc *p, *it;
   char *sp;
 
   acquire(&ptable.lock);
@@ -48,7 +48,9 @@ found:
   p->pid = nextpid++;
   release(&ptable.lock);
   
-  // initlock(&p.lock, "proc"); // 1) clone: Requirement 12
+  initlock(&(p->lock), "proc"); // 1) clone: Requirement 12
+  for (it = p; it->isThread == 1; it = it->parent) ;
+  p->parentlock = &(it->lock);
 
   // Allocate kernel stack if possible.
   if((p->kstack = kalloc()) == 0){
@@ -109,18 +111,23 @@ userinit(void)
 int
 growproc(int n)
 {
+  acquire(proc->parentlock);
   uint sz;
-  
   sz = proc->sz;
   if(n > 0){
-    if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
+    if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0) {
+      release(proc->parentlock);
       return -1;
+    }
   } else if(n < 0){
-    if((sz = deallocuvm(proc->pgdir, sz, sz + n)) == 0)
+    if((sz = deallocuvm(proc->pgdir, sz, sz + n)) == 0) {
+      release(proc->parentlock);
       return -1;
+    }
   }
   proc->sz = sz;
   switchuvm(proc);
+  release(proc->parentlock);
   return 0;
 }
 

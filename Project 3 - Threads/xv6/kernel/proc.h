@@ -9,6 +9,7 @@
 #define SEG_UDATA 5  // user data+stack
 #define SEG_TSS   6  // this process's task state
 #define NSEGS     7
+#include "spinlock.h"
 
 // Per-CPU state
 struct cpu {
@@ -75,7 +76,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int isThread;                // Process = 0 and Thread = 1
-  // struct spinlock lock;        // mutex (mappages())
+  struct spinlock lock;        // mutex
+  struct spinlock *parentlock; // parent mutex
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -224,13 +224,13 @@ loaduvm(pde_t *pgdir, char *addr, struct inode *ip, uint offset, uint sz)
   return 0;
 }
 
-struct spinlock lock4mappages; // Lock for mappages in allocuvm
+// struct spinlock lock4mappages; // Lock for mappages in allocuvm
 
-void
-lock4mappagesinit(void)
-{
-  initlock(&lock4mappages, "mappages");
-}
+// void
+// lock4mappagesinit(void)
+// {
+//   initlock(&lock4mappages, "mappages");
+// }
 
 // Allocate page tables and physical memory to grow process from oldsz to
 // newsz, which need not be page aligned.  Returns new size or 0 on error.
@@ -254,9 +254,9 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
     memset(mem, 0, PGSIZE);
-    acquire(&lock4mappages);
+    // acquire(&lock4mappages);
     mappages(pgdir, (char*)a, PGSIZE, PADDR(mem), PTE_W|PTE_U);
-    release(&lock4mappages);
+    // release(&lock4mappages);
   }
   return newsz;
 }
