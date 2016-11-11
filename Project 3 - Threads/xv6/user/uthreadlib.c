@@ -18,6 +18,9 @@ thread_create(void (*start_routine)(void*), void* arg)
 int
 thread_join(int pid)
 {
+  int ustack;
+  if ((ustack = find_ustack(pid)) < 0) return -1;
+  free((void*)ustack);
   return join(pid);
 }
 // END: Calls join to wait for the thread specified by pid to complete.  Cleans up the completed thread's user stack.

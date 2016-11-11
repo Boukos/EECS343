@@ -29,6 +29,7 @@ int clone(void(*fcn)(void*), void* arg, void* stack);
 int join(int pid);
 void cv_wait(cond_t* conditionVariable, lock_t* lock);
 void cv_signal(cond_t* conditionVariable);
+int find_ustack(int pid);
 
 // user library functions (ulib.c)
 int stat(char*, struct stat*);

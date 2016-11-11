@@ -27,5 +27,6 @@
 #define SYS_join   23
 #define SYS_cv_wait 24
 #define SYS_cv_signal 25
+#define SYS_find_ustack 26
 
 #endif // _SYSCALL_H_

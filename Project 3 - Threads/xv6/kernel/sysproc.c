@@ -137,3 +137,12 @@ sys_cv_signal(void)
   return 0;
 }
 // END: Wake the threads that are waiting on conditionVariable.
+
+int
+sys_find_ustack(void)
+{
+  // int find_ustack(int pid);
+  int pid;
+  if (argint(0, &pid) < 0) return -1;
+  return find_ustack(pid);
+}

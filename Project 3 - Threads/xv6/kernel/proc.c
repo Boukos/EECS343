@@ -43,11 +43,10 @@ allocproc(void)
   return 0;
 
 found:
-  p->isThread = 0;
   p->state = EMBRYO;
   p->pid = nextpid++;
   release(&ptable.lock);
-  
+  p->isThread = 0;
   initlock(&p->lock, "proc"); // 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
@@ -514,6 +513,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   thread->isThread = 1; // Prequirement 11
   thread->pgdir = proc->pgdir; // Prequirement 02
   thread->sz = proc->sz;
+  thread->ustack = (char*)stack;
 
   // BEGIN: Prequirement 09
   for (p = proc; p->isThread == 1; p = p->parent) ;
@@ -533,6 +533,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // END: Prequirement 05
   thread->tf->eip = (uint)fcn; // Prequirement 04
   // thread->tf->ebp = arg;
+
   thread->tf->eax = 0;
 
   // BEGIN: Prequirement 03
@@ -646,3 +647,27 @@ cv_signal(cond_t* conditionVariable)
 
 }
 // END: Wake the threads that are waiting on conditionVariable.
+
+int
+find_ustack(int pid)
+{
+  struct proc *p;
+  int existsthread;
+  acquire(&ptable.lock);
+  for (;;) {
+    existsthread = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->isThread == 1 && p->pid == pid) {
+        existsthread = 1;
+        return (int)p->ustack;
+      }
+    }
+    if (!existsthread || proc->killed) {
+      release(&ptable.lock);
+      return -1;         
+    }
+    sleep(proc, &ptable.lock);
+  }
+  release(&ptable.lock);
+  return -1;
+}
