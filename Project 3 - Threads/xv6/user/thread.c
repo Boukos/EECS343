@@ -29,7 +29,7 @@ main(int argc, char *argv[])
    int thread_pid = thread_create(worker, &arg);
    assert(thread_pid > 0);
 
-   int join_pid = thread_join();
+   int join_pid = thread_join(thread_pid);
    assert(join_pid == thread_pid);
    assert(global == 2);
 

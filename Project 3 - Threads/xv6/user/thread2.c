@@ -30,7 +30,7 @@ main(int argc, char *argv[])
       global = 1;
       thread_pid = thread_create(worker, 0);
       assert(thread_pid > 0);
-      join_pid = thread_join();
+      join_pid = thread_join(thread_pid);
       assert(join_pid == thread_pid);
       assert(global == 5);
       assert((uint)sbrk(0) < (150 * 4096) && "shouldn't even come close");

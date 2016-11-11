@@ -25,27 +25,29 @@ USER_PROGS := \
 	join2\
 	join3\
 	join4\
+	thread\
+	thread2\
 
 	# cond\
 	# multi\
 	# size\
-	# thread\
+	
 	# cond2\
 	# noexit\
 	# stack\
 	# cond3\
 	# locks\
 	# race\
-	# thread2\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
 # user library files
 USER_LIBS := \
 	ulib.o\
+	uthreadlib.o\
 	usys.o\
 	printf.o\
-	umalloc.o
+	umalloc.o\
 
 USER_LIBS := $(addprefix user/, $(USER_LIBS))
 
