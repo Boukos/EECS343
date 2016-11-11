@@ -630,3 +630,19 @@ join(int pid) // Prequirement 01
   }
   return pid;
 }
+
+// BEGIN: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
+void
+cv_wait(cond_t* conditionVariable, lock_t* lock)
+{
+
+}
+// END: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
+
+// BEGIN: Wake the threads that are waiting on conditionVariable.
+void
+cv_signal(cond_t* conditionVariable)
+{
+
+}
+// END: Wake the threads that are waiting on conditionVariable.

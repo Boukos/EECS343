@@ -116,8 +116,11 @@ int
 sys_cv_wait(void)
 {
   // void cv_wait(cond_t* conditionVariable, lock_t* lock);
-  // cond_t* conditionVariable;
-  // lock_t* lock;
+  cond_t* conditionVariable;
+  lock_t* lock;
+  if (argptr(0, (char**)&conditionVariable, 4) < 0) return -1;
+  if (argptr(1, (char**)&lock, 4) < 0) return -1;
+  cv_wait(conditionVariable, lock);
   return 0;
 }
 // END: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
@@ -127,7 +130,9 @@ int
 sys_cv_signal(void)
 {
   // void cv_signal(cond_t* conditionVariable);
-  // cond_t* conditionVariable;
+  cond_t* conditionVariable;
+  if (argptr(0, (char**)&conditionVariable, 4) < 0) return -1;
+  cv_signal(conditionVariable);
   return 0;
 }
 // END: Wake the threads that are waiting on conditionVariable.
