@@ -32,7 +32,7 @@ pinit(void)
 static struct proc*
 allocproc(void)
 {
-  struct proc *p, *it;
+  struct proc *p;
   char *sp;
 
   acquire(&ptable.lock);
@@ -48,9 +48,10 @@ found:
   p->pid = nextpid++;
   release(&ptable.lock);
   
-  initlock(&(p->lock), "proc"); // 1) clone: Requirement 12
-  for (it = p; it->isThread == 1; it = it->parent) ;
-  p->parentlock = &(it->lock);
+  // BEGIN: 1) clone: Requirement 12
+  initlock(&(p->lock), "proc");
+  p->parentlock = &(p->lock);
+  // END: 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
   if((p->kstack = kalloc()) == 0){
@@ -520,6 +521,7 @@ clone(void(*fcn)(void*), void* arg, void* stack) // Prequirement 01
   // BEGIN: Prequirement 09
   for (p = proc; p->isThread == 1; p = p->parent) ;
   thread->parent = p;
+  thread->parentlock = &(p->lock); // 1) clone: Requirement 12
   // while (thread->parent->isThread == 1) thread->parent = thread->parent->parent;
   // cprintf("thread->parent = %d\tproc = %d\n", thread->parent, proc);
   // cprintf("thread->parent->isThread = %d\tproc->isThread = %d\n", thread->parent->isThread, proc->isThread);

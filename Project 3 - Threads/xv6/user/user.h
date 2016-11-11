@@ -43,4 +43,3 @@ void free(void*);
 int atoi(const char*);
 
 #endif // _USER_H_
-

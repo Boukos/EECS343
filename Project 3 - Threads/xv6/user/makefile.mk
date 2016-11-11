@@ -14,9 +14,9 @@ USER_PROGS := \
 	sh\
 	stressfs\
 	tester\
-	usertests\
 	wc\
 	zombie\
+	usertests\
 	badclone\
 	clone\
 	clone2\
