@@ -32,11 +32,15 @@ main(int argc, char *argv[])
 
    int arg = 42;
    int new_thread_pid = clone(worker, &arg, stack);
+   // printf(1, "return value = %d\n", *(uint*)(stack + PGSIZE - 8));
    assert(new_thread_pid > 0);
-   // printf(1, "stack = %d\n", (int)stack);
-   // printf(1, "ustack = %d\n", find_ustack(new_thread_pid));
-   assert((int)stack == find_ustack(new_thread_pid));
+   printf(1, "stack = %d\n", (int)stack);
+   printf(1, "ustack = %d\n", find_ustack(new_thread_pid));
+   int ustack = find_ustack(new_thread_pid);
+   assert((int)stack == ustack);
+   free((void*)ustack);
    int join_pid = join(new_thread_pid);
+   printf(1, "return value = %d\n", *(uint*)(stack + PGSIZE - 8));
    assert(join_pid == new_thread_pid);
    assert(global == 2);
 
