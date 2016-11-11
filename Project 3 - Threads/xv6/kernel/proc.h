@@ -9,7 +9,6 @@
 #define SEG_UDATA 5  // user data+stack
 #define SEG_TSS   6  // this process's task state
 #define NSEGS     7
-#include "spinlock.h"
 
 // Per-CPU state
 struct cpu {
