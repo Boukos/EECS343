@@ -56,4 +56,3 @@ worker(void *arg_ptr) {
    global++;
    exit();
 }
-
