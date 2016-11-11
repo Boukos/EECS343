@@ -33,7 +33,9 @@ main(int argc, char *argv[])
    int arg = 42;
    int new_thread_pid = clone(worker, &arg, stack);
    assert(new_thread_pid > 0);
-
+   // printf(1, "stack = %d\n", (int)stack);
+   // printf(1, "ustack = %d\n", find_ustack(new_thread_pid));
+   assert((int)stack == find_ustack(new_thread_pid));
    int join_pid = join(new_thread_pid);
    assert(join_pid == new_thread_pid);
    assert(global == 2);

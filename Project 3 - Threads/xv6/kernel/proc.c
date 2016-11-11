@@ -652,22 +652,29 @@ int
 find_ustack(int pid)
 {
   struct proc *p;
-  int existsthread;
+  int havekids;
+
   acquire(&ptable.lock);
-  for (;;) {
-    existsthread = 0;
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-      if (p->isThread == 1 && p->pid == pid) {
-        existsthread = 1;
+  for(;;){
+    // Scan through table looking for zombie children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->isThread == 0 || p->pid != pid) // 3) side effects: Requirement 01
+        continue;
+      havekids = 1;
+      if(p->state == ZOMBIE){
+        release(&ptable.lock);
         return (int)p->ustack;
       }
     }
-    if (!existsthread || proc->killed) {
+
+    // No point waiting if we don't have any children.
+    if(!havekids || proc->killed){
       release(&ptable.lock);
-      return -1;         
+      return -1;
     }
-    sleep(proc, &ptable.lock);
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
-  release(&ptable.lock);
-  return -1;
 }
