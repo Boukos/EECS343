@@ -32,14 +32,10 @@ USER_PROGS := \
 	multi\
 	noexit\
 	size\
-
-	# cond\
-	
-	# cond2\
-	
-	
+	race\
+	cond\
+	cond2\
 	# cond3\
-	# race\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

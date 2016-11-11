@@ -45,7 +45,7 @@ main(int argc, char *argv[])
    cv_signal(&cond1);
    lock_release(&lock);
 
-   int join_pid = thread_join();
+   int join_pid = thread_join(thread_pid);
    assert(join_pid == thread_pid);
 
    printf(1, "TEST PASSED\n");
