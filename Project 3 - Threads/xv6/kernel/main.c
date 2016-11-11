@@ -49,7 +49,6 @@ mainc(void)
   uartinit();      // serial port
   kvmalloc();      // initialize the kernel page table
   pinit();         // process table
-  // lock4mappagesinit(); // lock for mappages
   tvinit();        // trap vectors
   binit();         // buffer cache
   fileinit();      // file table
