@@ -28,14 +28,14 @@ thread_join(int pid)
 // BEGIN: Acquires the lock pointed to by lock.  If the lock is already held, spin until it becomes available.
 void lock_acquire(lock_t* lock)
 {
-  while (xchg((uint*)lock, 1) != 0) ;
+  while(xchg(lock, 1) != 0) ;
 }
 // END: Acquires the lock pointed to by lock.  If the lock is already held, spin until it becomes available.
 
 // BEGIN: Release the lock pointed to by lock.
 void lock_release(lock_t* lock)
 {
-  xchg((uint*)lock, 0);
+  xchg(lock, 0);
 }
 // END: Release the lock pointed to by lock.
 

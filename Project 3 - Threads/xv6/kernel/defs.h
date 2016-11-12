@@ -126,6 +126,8 @@ void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
 void            pushcli(void);
 void            popcli(void);
+void            acquire_lock_t(lock_t* lock);
+void            release_lock_t(lock_t* lock);
 
 // string.c
 int             memcmp(const void*, const void*, uint);

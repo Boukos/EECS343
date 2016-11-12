@@ -35,10 +35,9 @@ main(int argc, char *argv[])
    assert(clone_pid > 0);
 
    sbrk(PGSIZE);
-   // void **join_stack = (void**) ((uint)sbrk(0) - 4);
-   // assert(join((void**)((uint)join_stack + 2)) == -1);
+   void *join_stack = (void*) ((uint)sbrk(0) - 4);
    assert(join(clone_pid) == clone_pid);
-   // assert(stack == *join_stack);
+   assert(stack == join_stack);
    assert(global == 2);
 
    printf(1, "TEST PASSED\n");

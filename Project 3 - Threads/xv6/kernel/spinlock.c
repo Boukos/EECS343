@@ -38,6 +38,12 @@ acquire(struct spinlock *lk)
   getcallerpcs(&lk, lk->pcs);
 }
 
+void
+acquire_lock_t(lock_t* lock)
+{
+  while(xchg(lock, 1) != 0) ;
+}
+
 // Release the lock.
 void
 release(struct spinlock *lk)
@@ -60,6 +66,13 @@ release(struct spinlock *lk)
   xchg(&lk->locked, 0);
 
   popcli();
+}
+
+void
+release_lock_t(lock_t* lock)
+{
+  xchg(lock, 0);
+  // popcli();
 }
 
 // Record the current call stack in pcs[] by following the %ebp chain.

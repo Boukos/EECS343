@@ -47,6 +47,7 @@ found:
   p->pid = nextpid++;
   release(&ptable.lock);
   p->isThread = 0;
+  p->parent = p;
   initlock(&p->lock, "proc"); // 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
@@ -108,23 +109,32 @@ userinit(void)
 int
 growproc(int n)
 {
-  acquire(&proc->parent->lock);
+  struct proc *p;
+  if (proc->isThread == 0) acquire(&proc->lock);
+  else {
+    for (p = proc; p->isThread == 1; p = p->parent);
+    proc->parent = p;
+    acquire(&proc->parent->lock);
+  }
   uint sz;
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0) {
-      release(&proc->parent->lock);
+      if (proc->isThread == 0) release(&proc->lock);
+      else release(&proc->parent->lock);
       return -1;
     }
   } else if(n < 0){
     if((sz = deallocuvm(proc->pgdir, sz, sz + n)) == 0) {
-      release(&proc->parent->lock);
+      if (proc->isThread == 0) release(&proc->lock);
+      else release(&proc->parent->lock);
       return -1;
     }
   }
   proc->sz = sz;
   switchuvm(proc);
-  release(&proc->parent->lock);
+  if (proc->isThread == 0) release(&proc->lock);
+  else release(&proc->parent->lock);
   return 0;
 }
 
@@ -636,7 +646,25 @@ join(int pid) // Prequirement 01
 void
 cv_wait(cond_t* conditionVariable, lock_t* lock)
 {
+  if(proc == 0) panic("sleep");
 
+  if(lock == 0) panic("sleep without lock");
+
+  if(lock != (lock_t*)&ptable.lock){
+    acquire(&ptable.lock);
+    release_lock_t(lock);
+  }
+
+  proc->chan = (void *)conditionVariable;
+  proc->state = SLEEPING;
+  sched();
+
+  proc->chan = 0;
+
+  if(lock != (lock_t*)&ptable.lock){
+    release(&ptable.lock);
+    acquire_lock_t(lock);
+  }
 }
 // END: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
 
@@ -644,7 +672,10 @@ cv_wait(cond_t* conditionVariable, lock_t* lock)
 void
 cv_signal(cond_t* conditionVariable)
 {
-
+  struct proc *p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if (p->state == SLEEPING && p->chan == (void*)conditionVariable)
+      p->state = RUNNABLE;
 }
 // END: Wake the threads that are waiting on conditionVariable.
 
