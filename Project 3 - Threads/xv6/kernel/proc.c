@@ -18,6 +18,7 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+struct spinlock lgp;
 
 void
 pinit(void)
