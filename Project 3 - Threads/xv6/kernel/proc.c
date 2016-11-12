@@ -48,7 +48,7 @@ found:
   p->pid = nextpid++;
   release(&ptable.lock);
   p->isThread = 0;
-  p->parent = p;
+  p->parent = proc;
   initlock(&p->lock, "proc"); // 1) clone: Requirement 12
 
   // Allocate kernel stack if possible.
@@ -640,7 +640,6 @@ join(int pid) // Prequirement 01
     }
     sleep(proc, &ptable.lock);
   }
-  return pid;
 }
 
 // BEGIN: Release the lock pointed to by lock and put the caller to sleep.  Assumes that lock is held when this is called.  When signaled, the thread awakens and reacquires the lock.
