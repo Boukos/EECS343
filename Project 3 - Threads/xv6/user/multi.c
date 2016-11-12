@@ -46,15 +46,12 @@ main(int argc, char *argv[])
    for (i = 0; i < num_threads; i++) {
       int thread_pid = thread_create(worker, arg_ptr);
       assert(thread_pid > 0);
-      int join_pid = thread_join(thread_pid);
-      assert(join_pid > 0);
-      assert(thread_pid == join_pid); 
-   }
+   // }
 
    // for (i = 0; i < num_threads; i++) {
-   //    int join_pid = thread_join();
-   //    assert(join_pid > 0);
-   // }
+      int join_pid = thread_join(thread_pid);
+      assert(join_pid > 0);
+   }
 
    printf(1, "TEST PASSED\n");
    exit();

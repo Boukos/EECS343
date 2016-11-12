@@ -35,7 +35,7 @@ USER_PROGS := \
 	race\
 	cond\
 	cond2\
-	# cond3\
+	cond3\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

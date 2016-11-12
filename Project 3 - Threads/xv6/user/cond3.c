@@ -34,17 +34,17 @@ main(int argc, char *argv[])
    for(i = 0; i < nthreads; i++) {
      int thread_pid = thread_create(worker, 0);
      assert(thread_pid > 0);
-   }
+   // }
 
    sleep(50);
 
-   for(i = 0; i < nthreads; i++) {
+   // for(i = 0; i < nthreads; i++) {
      lock_acquire(&lock);
      assert(global == i);
      cv_signal(&cond);
      lock_release(&lock);
 
-     int join_pid = thread_join();
+     int join_pid = thread_join(thread_pid);
      assert(join_pid > 0);
 
      sleep(10);
