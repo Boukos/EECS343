@@ -390,3 +390,47 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+int
+sys_tagFile(void)
+{
+  // int tagFile(int fileDescriptor, char* key, char* value, int valueLength);
+  int fileDescriptor;
+  char* key;
+  char* value;
+  int valueLength;
+  struct file *f;
+  if (argint(0, &fileDescriptor) < 0) return -1;
+  if (argstr(1, &key) < 0) return -1;
+  if (argstr(2, &value) < 0) return -1;
+  if (argint(3, &valueLength) < 0) return -1;
+  if(fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
+
+  return 1;
+}
+
+int
+sys_removeFileTag(void)
+{
+  // int removeFileTag(int fileDescriptor, char* key);
+  int fileDescriptor;
+  char* key;
+  if (argint(0, &fileDescriptor) < 0) return -1;
+  if (argstr(1, &key) < 0) return -1;
+  return 1;
+}
+
+int
+sys_getFileTag(void)
+{
+  // int getFileTag(int fileDescriptor, char* key, char* buffer, int length);
+  int fileDescriptor;
+  char* key;
+  char* buffer;
+  int length;
+  if (argint(0, &fileDescriptor) < 0) return -1;
+  if (argstr(1, &key) < 0) return -1;
+  if (argstr(2, &buffer) < 0) return -1;
+  if (argint(3, &length) < 0) return -1;
+  return 1;
+}
