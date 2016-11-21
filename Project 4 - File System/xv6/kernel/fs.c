@@ -635,7 +635,7 @@ searchKey(uchar* key, uchar* str)
   for (i = 0; i < 512; i += 32) {
     j = 0;
     for ( ; j < 10 && i + j < 512 && key[j] && str[i + j] && key[j] == str[i + j]; j++) ;
-    if (j == keyLength && !key[j] && !str[i + j]) return i + j;
+    if (j == keyLength && !key[j] && !str[i + j]) return i + j - keyLength;
   }
   return -1;
 }
