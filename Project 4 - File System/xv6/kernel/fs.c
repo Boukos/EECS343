@@ -628,20 +628,37 @@ nameiparent(char *path, char *name)
 // You can restrict the disk space allotted to tags to 512 bytes per file.  In other words, you can require that all tag information for a given file must fit within a single 512-byte disk block.  If there isn't sufficient tag space for tagFile to complete, you can simply return -1.
 
 int
+searchKey(uchar* key, uchar* str)
+{
+  int i = 0, j = 0;
+  int keyLength = strlen((char*)key);
+  for (i = 0; i < 512; i += 32) {
+    j = 0;
+    for ( ; j < 10 && i + j < 512 && key[j] && str[i + j] && key[j] == str[i + j]; j++) ;
+    if (j == keyLength && !key[j] && !str[i + j]) return i + j;
+  }
+  return -1;
+}
+
+int
+searchInsert()
+
+int
 tagFile(int fileDescriptor, char* key, char* value, int valueLength)
 {
   struct file *f;
   struct buf *bp;
-  uint *a;
+  uchar *str;
   int keyLength;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   if (f->type != FD_INODE || !f->writable) return -1;
-  if (!key || (keyLength = strlen(key)) >= 1 || keyLength <= 9) return -1;
+  if (!key || (keyLength = strlen(key)) < 1 || keyLength > 9) return -1;
   if (!value || valueLength < 0) return -1;
   if (f->ip->tags == 0) f->ip->tags = balloc(f->ip->dev);
   bp = bread(f->ip->dev, f->ip->tags);
-  a = (uint*)bp->data;
-  a = a;
+  str = (uchar*)bp->data;
+  int keyPos = searchKey((uchar*)key, (uchar*)str);
+  if (keyPos < 0) ;
   return 1;
 }
 
@@ -665,7 +682,7 @@ removeFileTag(int fileDescriptor, char* key)
   int keyLength;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   if (f->type != FD_INODE || !f->writable) return -1;
-  if (!key || (keyLength = strlen(key)) >= 1 || keyLength <= 9) return -1;
+  if (!key || (keyLength = strlen(key)) < 1 || keyLength > 9) return -1;
   return 1;
 }
 
@@ -690,6 +707,6 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   int keyLength;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   if (f->type != FD_INODE || !f->readable) return -1;
-  if (!key || (keyLength = strlen(key)) >= 1 || keyLength <= 9) return -1;
+  if (!key || (keyLength = strlen(key)) < 1 || keyLength > 9) return -1;
   return 1;
 }
