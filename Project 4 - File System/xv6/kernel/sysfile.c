@@ -404,8 +404,8 @@ sys_tagFile(void)
   if (argstr(1, &key) < 0) return -1;
   if (argstr(2, &value) < 0) return -1;
   if (argint(3, &valueLength) < 0) return -1;
-  if(fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
-
+  if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
+  
   return 1;
 }
 
@@ -415,8 +415,10 @@ sys_removeFileTag(void)
   // int removeFileTag(int fileDescriptor, char* key);
   int fileDescriptor;
   char* key;
+  struct file *f;
   if (argint(0, &fileDescriptor) < 0) return -1;
   if (argstr(1, &key) < 0) return -1;
+  if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   return 1;
 }
 
@@ -428,9 +430,11 @@ sys_getFileTag(void)
   char* key;
   char* buffer;
   int length;
+  struct file *f;
   if (argint(0, &fileDescriptor) < 0) return -1;
   if (argstr(1, &key) < 0) return -1;
   if (argstr(2, &buffer) < 0) return -1;
   if (argint(3, &length) < 0) return -1;
+  if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   return 1;
 }
