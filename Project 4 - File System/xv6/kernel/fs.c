@@ -632,16 +632,22 @@ searchKey(uchar* key, uchar* str)
 {
   int i = 0, j = 0;
   int keyLength = strlen((char*)key);
-  for (i = 0; i < 512; i += 32) {
+  for (i = 0; i < BSIZE; i += 32) {
     j = 0;
-    for ( ; j < 10 && i + j < 512 && key[j] && str[i + j] && key[j] == str[i + j]; j++) ;
+    for ( ; j < 10 && i + j < BSIZE && key[j] && str[i + j] && key[j] == str[i + j]; j++) ;
     if (j == keyLength && !key[j] && !str[i + j]) return i + j - keyLength;
   }
   return -1;
 }
 
 int
-searchInsert()
+searchEnd(uchar* str)
+{
+  int i = 0;
+  for (i = 0; i < BSIZE && key[i]; i += 32) ;
+  if (i == BSIZE) return -1;
+  return i;
+}
 
 int
 tagFile(int fileDescriptor, char* key, char* value, int valueLength)
