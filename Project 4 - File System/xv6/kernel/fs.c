@@ -680,7 +680,11 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
     memset((void*)((uint)str + (uint)endPos), 0, 28);
     memmove((void*)((uint)str + (uint)endPos), (void*)key, (uint)keyLength);
     memmove((void*)((uint)str + (uint)endPos + 10), (void*)value, (uint)valueLength);
-    cprintf((uint)str + (uint)endPos + 10);
+    // for (int i = 0; i < BSIZE; i += 32) {
+    //   cprintf("tagFile: key = %s\t value = %s\n", str + i, str + i + 10);
+
+    // }
+    // cprintf("\n");
     bwrite(bp);
     brelse(bp);
     iunlock(f->ip);
@@ -688,7 +692,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   }
   memset((void*)((uint)str + (uint)keyPos + 10), 0, 18);
   memmove((void*)((uint)str + (uint)keyPos + 10), (void*)value, (uint)valueLength);
-  cprintf("value = %s\n", value);
+  // cprintf("value = %s\n", value);
   bwrite(bp);
   brelse(bp);
   iunlock(f->ip);
@@ -753,7 +757,7 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
 {
   struct file *f;
   int keyLength;
-  int valueLength;
+  // int valueLength;
   struct buf *bp;
   uchar str[BSIZE];
   uchar *value;
@@ -767,20 +771,23 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   bp = bread(f->ip->dev, f->ip->tags);
   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
   brelse(bp);
-  iunlock(f->ip); 
+  iunlock(f->ip);
+  // for (int i = 0; i < BSIZE; i += 32) {
+  //   cprintf("getFileTag: key = %s\t value = %s\n", str + i, str + i + 10);
+  // }
+  // cprintf("\n");
   int keyPos = searchKey((uchar*)key, (uchar*)str);
+  // cprintf("getFileTag: keyPos = %s\tkey = %s\tvalue = %s\t", (char*)((uint)str + (uint)keyPos), key, (char*)((uint)str + (uint)keyPos + 10));
   if (keyPos < 0) return -1;
   value = (uchar*)((uint)str + (uint)keyPos + 10);
-  valueLength = 17;
-  while (valueLength >= 0 && !value[valueLength]) valueLength--;
-  valueLength++;
-  if (!valueLength) {
-    brelse(bp);
-    iunlock(f->ip);
-    return -1;    
-  }
-  memmove((void*)(buffer), (void*)((uint)str + (uint)keyPos + 10), (uint)min(length, valueLength));
-  return min(length, valueLength);
+  // valueLength = 17;
+  // while (valueLength >= 0 && !value[valueLength]) valueLength--;
+  // valueLength++;
+  // valueLength = strlen((char*)value);
+  // if (!valueLength) return -1;
+  memmove((void*)buffer, (void*)value, (uint)min(length, 18));
+  // cprintf("buffer = %s\n", (char*)buffer);
+  return min(length, 18);
 }
 
 int
@@ -803,7 +810,7 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   iunlock(f->ip);
   for (i = 0, j = 0; i < BSIZE; i += 32) {
     if (str[i]) {
-      memmove((void*)keys[j].key, (void*)((uint)str + i), 10);
+      memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
       j++;
     }
   }
