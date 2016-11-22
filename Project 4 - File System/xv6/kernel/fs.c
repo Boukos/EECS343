@@ -757,7 +757,7 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
 {
   struct file *f;
   int keyLength;
-  // int valueLength;
+  int valueLength;
   struct buf *bp;
   uchar str[BSIZE];
   uchar *value;
@@ -780,14 +780,14 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   // cprintf("getFileTag: keyPos = %s\tkey = %s\tvalue = %s\t", (char*)((uint)str + (uint)keyPos), key, (char*)((uint)str + (uint)keyPos + 10));
   if (keyPos < 0) return -1;
   value = (uchar*)((uint)str + (uint)keyPos + 10);
-  // valueLength = 17;
-  // while (valueLength >= 0 && !value[valueLength]) valueLength--;
-  // valueLength++;
+  valueLength = 17;
+  while (valueLength >= 0 && !value[valueLength]) valueLength--;
+  valueLength++;
   // valueLength = strlen((char*)value);
   // if (!valueLength) return -1;
-  memmove((void*)buffer, (void*)value, (uint)min(length, 18));
+  memmove((void*)buffer, (void*)value, (uint)min(length, valueLength));
   // cprintf("buffer = %s\n", (char*)buffer);
-  return min(length, 18);
+  return min(length, valueLength);
 }
 
 int
