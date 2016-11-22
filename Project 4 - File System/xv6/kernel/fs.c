@@ -782,6 +782,55 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
 int
 getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
 {
-
-  return 1;
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int fd = 0;
+  struct buf *bp;
+  uchar str[BSIZE];
+  int keyPos = 0;
+  struct file *f;
+  int valueLengthActual = 0;
+  char *valueActual;
+  struct dirent *de;
+  char *filename;
+  int filenameLength = 0;
+  memset((void*)results, 0, (uint)resultsLength);
+  for (fd = 0, i = 0; fd < NOFILE; fd++) {
+    if ((f = proc->ofile[fd]) != 0 && f->type == FD_INODE && f->readable && f->ip) {
+      memset((void*)str, 0, (uint)BSIZE);
+      ilock(f->ip);
+      if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
+      bp = bread(f->ip->dev, f->ip->tags);
+      memmove((void*)str, (void*)bp->data, (uint)BSIZE);
+      brelse(bp);
+      iunlock(f->ip);
+      if ((keyPos = searchKey((uchar*)key, (uchar*)str)) >= 0) {
+        valueLengthActual = 17;
+        valueActual = (char*)((uint)keyPos + 10);
+        while (valueLengthActual >= 0 && !valueActual[valueLengthActual]) valueLengthActual--;
+        valueLengthActual++;
+        if (valueLengthActual == valueLength) {
+          for (j = 0; j < valueLength && valueActual[j] == value[j]; j++) ;
+          if (j == valueLength) {
+            de = (struct dirent*)str;
+            if (de->inum) {
+              k = resultsLength - 1;
+              while (k >= 0 && !results[k]) k--;
+              k++;
+              if (k) k++;
+              filename = de->name;
+              filenameLength = strlen(filename);
+              if (resultsLength - k >= filenameLength) {
+                memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
+                results[filenameLength] = 0;
+                i++;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return i;
 }

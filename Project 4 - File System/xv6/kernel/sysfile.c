@@ -444,3 +444,20 @@ sys_getAllTags(void)
   if (argint(2, &maxTags) < 0) return -1;
   return getAllTags(fileDescriptor, keys, maxTags);
 }
+
+int
+sys_getFilesByTag(void)
+{
+  // int getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength);
+  char* key;
+  char* value;
+  int valueLength;
+  char* results;
+  int resultsLength;
+  if (argstr(0, &key) < 0) return -1;
+  if (argstr(1, &value) < 0) return -1;
+  if (argint(2, &valueLength) < 0) return -1;
+  if (argstr(3, &results) < 0) return -1;
+  if (argint(4, &resultsLength)) return -1;
+  return getFilesByTag(key, value, valueLength, results, resultsLength);
+}
