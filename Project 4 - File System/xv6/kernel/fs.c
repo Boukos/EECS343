@@ -644,7 +644,7 @@ int
 searchEnd(uchar* str)
 {
   int i = 0;
-  for (i = 0; i < BSIZE && key[i]; i += 32) ;
+  for (i = 0; i < BSIZE && str[i]; i += 32) ;
   if (i == BSIZE) return -1;
   return i;
 }
@@ -656,6 +656,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   struct buf *bp;
   uchar *str;
   int keyLength;
+  // int i;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   if (f->type != FD_INODE || !f->writable) return -1;
   if (!key || (keyLength = strlen(key)) < 1 || keyLength > 9) return -1;
@@ -664,7 +665,11 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   bp = bread(f->ip->dev, f->ip->tags);
   str = (uchar*)bp->data;
   int keyPos = searchKey((uchar*)key, (uchar*)str);
-  if (keyPos < 0) ;
+  if (keyPos < 0) {
+    int endPos = searchEnd((uchar*)str);
+    if (endPos < 0) return -1;
+    
+  }
   return 1;
 }
 
