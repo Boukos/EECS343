@@ -36,7 +36,10 @@ main(int argc, char *argv[])
  // getFileTag(fd, "Game", buf3, 4);
  // printf(1, "buf3 = %s\n", buf3);
  // close(fd);
-
+ // char results[5];
+ // int cnt = getFilesByTag("Game", "CUBA", 4, results, 5);
+ // printf(1, "cnt = %d\n", cnt);
+ // printf(1, "results = %s\n", results);
  fd = open("ls", O_RDONLY);
 
  struct Key keys[16];
