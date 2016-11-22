@@ -771,7 +771,7 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   // }
   // cprintf("\n");
   for (i = 0, j = 0; i < BSIZE; i += 32) {
-    if (str[i]) {;
+    if (str[i]) {
       memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
       j++;
     }
@@ -779,8 +779,9 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   return j;
 }
 
-// int
-// getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
-// {
-//   return 1;
-// }
+int
+getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
+{
+
+  return 1;
+}
