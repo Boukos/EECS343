@@ -617,21 +617,6 @@ nameiparent(char *path, char *name)
   return namex(path, 1, name);
 }
 
-// 1) tagFile
-
-// Requirements (and hints)
-
-// Here is a list of specific requirements related to the tagFile syscall:
-
-// The tagFile syscall must use the exact function signature that we have provided above.
-// The tagFile syscall must tag the file specified by the file descriptor with the key-value pair that is passed in.
-// Hint: you'll have to figure out where to store these tags.  One reasonable approach is to repurpose one of the inode's direct blocks for tag storage.  You can read more about inodes starting on page 77 of the xv6 textbook.
-// If the file already has a tag with the specified key, then the specified value will overwrite the stored value.  In other words, if a file is tagged with "language": "English", you should be able to use tagFile to change the tag to "language": "Java".
-// The tagFile syscall must validate the arguments passed in and return -1 as necessary to indicate an error.  Some cases to consider:
-// The file descriptor must be opened in write mode in order to tag a file successfully.
-// The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
-// You can restrict the disk space allotted to tags to 512 bytes per file.  In other words, you can require that all tag information for a given file must fit within a single 512-byte disk block.  If there isn't sufficient tag space for tagFile to complete, you can simply return -1.
-
 int
 searchKey(uchar* key, uchar* str)
 {
@@ -699,19 +684,6 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   return 1;
 }
 
-// 2) removeFileTag
-
-// Requirements (and hints)
-
-// Here is a list of specific requirements related to the removeFileTag syscall:
-
-// The removeFileTag syscall must use the exact function signature that we have provided above.
-// The removeFileTag syscall must remove the specified tag from the specified file.
-// The syscall should return -1 to indicate an error.  Here are some cases to consider:
-// If the tag specified by key cannot be found or is invalid, return -1.
-// If the file descriptor is not open and writable, return -1.
-// The syscall should return 1 to indicate success.
-
 int
 removeFileTag(int fileDescriptor, char* key)
 {
@@ -737,20 +709,6 @@ removeFileTag(int fileDescriptor, char* key)
   iunlock(f->ip);
   return 1;
 }
-
-// 3) getFileTag
-
-// Requirements (and hints)
-
-// Here is a list of specific requirements related to the getFileTag syscall:
-
-// The getFileTag syscall must use the exact function signature that we have provided above.
-// The syscall should return the length of the value part of the specified tag.  This returned length should NOT include any null-terminating byte.  In fact, since the length of the value is being passed around, you do not need to use a null-terminating byte at all.  If you do choose to use one, it should not be counted in the returned length.
-// The value of the specified tag should be written to buffer.
-// If the length of the value is longer than length, the syscall should return the actual length of the value.  This allows the user to decide whether to allocate a larger buffer and try again.
-// The syscall should return -1 to indicate failure.  Here are some cases to consider:
-// If the key cannot be found or is invalid, return -1.
-// If the file descriptor is not open and readable, return -1.
 
 int
 getFileTag(int fileDescriptor, char* key, char* buffer, int length)
@@ -820,3 +778,9 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   }
   return j;
 }
+
+// int
+// getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
+// {
+//   return 1;
+// }
