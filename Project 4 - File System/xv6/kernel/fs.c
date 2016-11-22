@@ -756,11 +756,12 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   uchar str[BSIZE];
   uchar *value;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
-  if (f->type != FD_INODE || !f->readable || !f->ip || !f->ip->tags) return -1;
+  if (f->type != FD_INODE || !f->readable || !f->ip) return -1;
   if (!key || (keyLength = strlen(key)) < 1 || keyLength > 9) return -1;
   if (!buffer) return -1;
   if (length < 0 || length > 18) return -1;
   ilock(f->ip);
+  if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   bp = bread(f->ip->dev, f->ip->tags);
   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
   brelse(bp);
@@ -789,10 +790,11 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   uint i = 0;
   int j = 0;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
-  if (f->type != FD_INODE || !f->readable || !f->ip || !f->ip->tags) return -1;
+  if (f->type != FD_INODE || !f->readable || !f->ip) return -1;
   if (!keys) return -1;
   if (maxTags < 0) return -1;
   ilock(f->ip);
+  if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   bp = bread(f->ip->dev, f->ip->tags);
   memmove((void*)str, (void*)bp, (uint)BSIZE);
   brelse(bp);
