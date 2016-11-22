@@ -3,6 +3,13 @@
 
 struct stat;
 
+#ifndef _KEY_H_
+#define _KEY_H_
+struct Key {
+  char key[10];  // at most 10 bytes for key
+};
+#endif // _KEY_H_
+
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));
@@ -28,6 +35,7 @@ int uptime(void);
 int tagFile(int fileDescriptor, char* key, char* value, int valueLength);
 int removeFileTag(int fileDescriptor, char* key);
 int getFileTag(int fileDescriptor, char* key, char* buffer, int length);
+int getAllTags(int fileDescriptor, struct Key *keys, int maxTags);
 
 // user library functions (ulib.c)
 int stat(char*, struct stat*);

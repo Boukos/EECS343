@@ -20,6 +20,7 @@ USER_PROGS := \
 	tagFile-bad-fd\
 	tagFile\
 	removeFileTag\
+	getAllTags\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
