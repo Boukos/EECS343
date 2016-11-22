@@ -680,6 +680,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
     memset((void*)((uint)str + (uint)endPos), 0, 28);
     memmove((void*)((uint)str + (uint)endPos), (void*)key, (uint)keyLength);
     memmove((void*)((uint)str + (uint)endPos + 10), (void*)value, (uint)valueLength);
+    cprintf((uint)str + (uint)endPos + 10);
     bwrite(bp);
     brelse(bp);
     iunlock(f->ip);
@@ -687,6 +688,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   }
   memset((void*)((uint)str + (uint)keyPos + 10), 0, 18);
   memmove((void*)((uint)str + (uint)keyPos + 10), (void*)value, (uint)valueLength);
+  cprintf("value = %s\n", value);
   bwrite(bp);
   brelse(bp);
   iunlock(f->ip);

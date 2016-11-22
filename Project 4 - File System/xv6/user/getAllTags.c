@@ -23,26 +23,43 @@ main(int argc, char *argv[])
  close(fd);
 
  fd = open("ls", O_RDONLY);
-
- struct Key keys[16];
- int numTags = getAllTags(fd, keys, 16);
- if(numTags < 0){
-   exit();
- }
-
- if(numTags > 16){
-   numTags = 16;
- }
- char buffer[18];
- int i;
- printf(1, "Here is a list of this file's tags:\n");
- for(i = 0; i < numTags; i++){
-   int res = getFileTag(fd, keys[i].key, buffer, 18);
-   if(res > 0){
-     printf(1, "%s: %s\n", keys[i].key, buffer);
-   }
- }
+ char buf0[8];
+ char buf1[4];
+ char buf2[3];
+ char buf3[4];
+ getFileTag(fd, "Game", buf3, 4);
+ printf(1, "buf3 = %s\n", buf3);
+ getFileTag(fd, "type", buf0, 8);
+ printf(1, "buf0 = %s\n", buf0);
+ getFileTag(fd, "language", buf1, 4);
+ printf(1, "buf1 = %s\n", buf1);
+ getFileTag(fd, "school", buf2, 3);
+ printf(1, "buf2 = %s\n", buf2);
+ // getFileTag(fd, "Game", buf3, 4);
+ // printf(1, "buf3 = %s\n", buf3);
  close(fd);
+
+ // fd = open("ls", O_RDONLY);
+
+ // struct Key keys[16];
+ // int numTags = getAllTags(fd, keys, 16);
+ // if(numTags < 0){
+ //   exit();
+ // }
+
+ // if(numTags > 16){
+ //   numTags = 16;
+ // }
+ // char buffer[18];
+ // int i;
+ // printf(1, "Here is a list of this file's tags:\n");
+ // for(i = 0; i < numTags; i++){
+ //   int res = getFileTag(fd, keys[i].key, buffer, 18);
+ //   if(res > 0){
+ //     printf(1, "%s: %s\n", keys[i].key, buffer);
+ //   }
+ // }
+ // close(fd);
 
  exit();
 }
