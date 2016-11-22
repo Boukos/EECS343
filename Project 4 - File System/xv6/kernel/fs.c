@@ -805,11 +805,15 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   ilock(f->ip);
   if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   bp = bread(f->ip->dev, f->ip->tags);
-  memmove((void*)str, (void*)bp, (uint)BSIZE);
+  memmove((void*)str, (void*)bp->data, (uint)BSIZE);
   brelse(bp);
   iunlock(f->ip);
+  // for (i = 0; i < BSIZE; i += 32) {
+  //   cprintf("getAllTags: key = %s\t value = %s\n", str + i, str + i + 10);
+  // }
+  // cprintf("\n");
   for (i = 0, j = 0; i < BSIZE; i += 32) {
-    if (str[i]) {
+    if (str[i]) {;
       memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
       j++;
     }
