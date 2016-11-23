@@ -24,6 +24,8 @@ USER_PROGS := \
 	tagFile2\
 	removeFileTag1\
 	getFileTag\
+	17string\
+	getAllTags\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
