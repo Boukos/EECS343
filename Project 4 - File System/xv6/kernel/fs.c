@@ -723,7 +723,7 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   if (!valueLength) return -1;
   memmove((void*)buffer, (void*)value, (uint)min(length, valueLength));
   // cprintf("buffer = %s\n", (char*)buffer);
-  return min(length, valueLength);
+  return valueLength;
 }
 
 int
