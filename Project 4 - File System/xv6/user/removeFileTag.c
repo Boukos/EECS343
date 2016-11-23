@@ -35,7 +35,6 @@ main(int argc, char *argv[])
 
    char buf[7];
    int valueLength = getFileTag(fd, key, buf, 7);
-   printf(1, "buf = %s\n", buf);
    assert(valueLength == len);
 
    int i;

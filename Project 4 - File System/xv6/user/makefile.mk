@@ -20,7 +20,12 @@ USER_PROGS := \
 	tagFile-bad-fd\
 	tagFile\
 	removeFileTag\
-	getAllTags\
+	hw6-test-concurrency\
+	hw6-test-corner\
+	hw6-test-functionality\
+	hw6-test-permission\
+	hw6-test-persistency\
+	hw6-test-prepare\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

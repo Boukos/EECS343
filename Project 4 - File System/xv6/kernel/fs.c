@@ -814,7 +814,7 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
 // }
 
 int
-readBuf(struct file* str, char* key, char* value, int valueLength, char* results, int resultsLength)
+readBuf(struct file* f, char* key, char* value, int valueLength, char* results, int resultsLength)
 {
   // int j = 0;
   // int k = 0;
@@ -841,20 +841,20 @@ readBuf(struct file* str, char* key, char* value, int valueLength, char* results
   //   if (valueLengthActual == valueLength) {
   //     for (j = 0; j < valueLength && valueActual[j] == value[j]; j++) ;
   //     if (j == valueLength) {
-        // de = (struct dirent*)str;
-        // if (de->inum) {
-        //   k = resultsLength - 1;
-        //   while (k >= 0 && !results[k]) k--;
-        //   k++;
-        //   if (k) k++;
-        //   filename = de->name;
-        //   filenameLength = strlen(filename);
-        //   if (resultsLength - k >= filenameLength) {
-        //     memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
-        //     results[filenameLength] = 0;
-        //     return 1;
-        //   }
-        // }
+  //       de = (struct dirent*)str;
+  //       if (de->inum) {
+  //         k = resultsLength - 1;
+  //         while (k >= 0 && !results[k]) k--;
+  //         k++;
+  //         if (k) k++;
+  //         filename = de->name;
+  //         filenameLength = strlen(filename);
+  //         if (resultsLength - k >= filenameLength) {
+  //           memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
+  //           results[filenameLength] = 0;
+  //           return 1;
+  //         }
+  //       }
   //     }
   //   }
   // }

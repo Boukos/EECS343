@@ -128,8 +128,6 @@ int
 getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
 {
   int i = 0;
-  // struct buf *bp;
-  // struct dirent *de;
   struct file *f;
   acquire(&ftable.lock);
   for (f = ftable.file; f < ftable.file + NFILE; f++) {
