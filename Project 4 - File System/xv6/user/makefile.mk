@@ -26,6 +26,7 @@ USER_PROGS := \
 	getFileTag\
 	17string\
 	getAllTags\
+	getFileTag\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

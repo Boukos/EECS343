@@ -129,12 +129,20 @@ getFilesByTag(char* key, char* value, int valueLength, char* results, int result
 {
   int i = 0;
   struct file *f;
+  cprintf("A\n");
   acquire(&ftable.lock);
+  cprintf("B\n");
   for (f = ftable.file; f < ftable.file + NFILE; f++) {
+    cprintf("C\n");
     if (f->readable && f->type == FD_INODE) {
+      cprintf("D\n");
       i += readBuf(f, key, value, valueLength, results, resultsLength);
+      cprintf("E\n");
     }
+    cprintf("F\n");
   }
+  cprintf("G\n");
   release(&ftable.lock);
+  cprintf("H\n");
   return i;
 }

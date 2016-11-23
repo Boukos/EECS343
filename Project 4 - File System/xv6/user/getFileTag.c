@@ -24,36 +24,37 @@ volatile int global = 1;
 int
 main(int argc, char *argv[])
 {
-   ppid = getpid();
    int fd = open("ls", O_RDWR);
-   printf(1, "fd of ls: %d\n", fd);
-   int res0 = tagFile(fd, "M0", "CS", 2);
-   assert(res0 > 0);
-   char buf[2];
-   int res1 = getFileTag(fd, "M0", buf, 2);
-   assert(res1 == 2);
-
-   char buf1[1];
-   int res2 = getFileTag(fd, "M0", buf1, 1);
-   assert(res2 == 2);
-   
-   char buf2[2];
-   int res3 = getFileTag(fd, "M1", buf2, 2);
-   assert(res3 < 0);
-
+   tagFile(fd, "type", "utility", 7);
+   tagFile(fd, "type", "xmanxma", 7);
+   tagFile(fd, "type", "yeildxxx", 8);
+   tagFile(fd, "language", "English", 7);
+   tagFile(fd, "language", "Java", 4);
+   tagFile(fd, "school", "Stanford", 8);
+   tagFile(fd, "school", "MIT", 3);
+   tagFile(fd, "Game", "NBA", 3);
+   tagFile(fd, "Game", "CUBA", 4);
    close(fd);
 
-   int i;
-   char *val = "CS";
-   for(i = 0; i < 2; i++){
-      char v_actual = buf[i];
-      char v_expected = val[i];
-      assert(v_actual == v_expected);
-   }
+   fd = open("ls", O_RDONLY);
+   char buf0[8];
+   char buf1[4];
+   char buf2[3];
+   char buf3[4];
+   getFileTag(fd, "type", buf0, 8);
+   printf(1, "buf0 = %s\n", buf0);
+   getFileTag(fd, "language", buf1, 4);
+   printf(1, "buf1 = %s\n", buf1);
+   getFileTag(fd, "school", buf2, 3);
+   printf(1, "buf2 = %s\n", buf2);
+   getFileTag(fd, "Game", buf3, 4);
+   printf(1, "buf3 = %s\n", buf3);
+   close(fd);
 
-   char buf3[2];
-   int res4 = getFileTag(fd, "M0", buf3, 2);
-   assert(res4 < 0);
+   char results[1024];
+   int cnt = getFilesByTag("Game", "CUBA", 4, results, 1024);
+   printf(1, "cnt = %d\n", cnt);
+   printf(1, "results = %s\n", results);
 
    printf(1, "TEST PASSED\n");
    exit();
