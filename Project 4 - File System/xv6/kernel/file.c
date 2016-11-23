@@ -123,3 +123,20 @@ filewrite(struct file *f, char *addr, int n)
   }
   panic("filewrite");
 }
+
+int
+getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength)
+{
+  int i = 0;
+  // struct buf *bp;
+  // struct dirent *de;
+  struct file *f;
+  acquire(&ftable.lock);
+  for (f = ftable.file; f < ftable.file + NFILE; f++) {
+    if (f->readable && f->type == FD_INODE) {
+      i += readBuf(f, key, value, valueLength, results, resultsLength);
+    }
+  }
+  release(&ftable.lock);
+  return i;
+}

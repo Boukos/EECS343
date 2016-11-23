@@ -33,6 +33,7 @@ void            fileinit(void);
 int             fileread(struct file*, char*, int n);
 int             filestat(struct file*, struct stat*);
 int             filewrite(struct file*, char*, int n);
+int             getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength);
 
 // fs.c
 int             dirlink(struct inode*, char*, uint);
@@ -55,7 +56,7 @@ int             tagFile(int fileDescriptor, char* key, char* value, int valueLen
 int             removeFileTag(int fileDescriptor, char* key);
 int             getFileTag(int fileDescriptor, char* key, char* buffer, int length);
 int             getAllTags(int fileDescriptor, struct Key keys[], int maxTags);
-int             getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength);
+int             readBuf(struct file* f, char* key, char* value, int valueLength, char* results, int resultsLength);
 
 // ide.c
 void            ideinit(void);
@@ -135,6 +136,8 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
+int             searchKey(uchar* key, uchar* str);
+int             searchEnd(uchar* str);
 
 // syscall.c
 int             argint(int, int*);
