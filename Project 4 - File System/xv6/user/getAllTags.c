@@ -10,57 +10,38 @@
 int
 main(int argc, char *argv[])
 {
- int fd = open("ls", O_RDWR);
- tagFile(fd, "type", "utility", 7);
- tagFile(fd, "type", "xmanxma", 7);
- tagFile(fd, "type", "yeildxxx", 8);
- tagFile(fd, "language", "English", 7);
- tagFile(fd, "language", "Java", 4);
- tagFile(fd, "school", "Stanford", 8);
- tagFile(fd, "school", "MIT", 3);
- tagFile(fd, "Game", "NBA", 3);
- tagFile(fd, "Game", "CUBA", 4);
- close(fd);
-
- // fd = open("ls", O_RDONLY);
- // char buf0[8];
- // char buf1[4];
- // char buf2[3];
- // char buf3[4];
- // getFileTag(fd, "type", buf0, 8);
- // printf(1, "buf0 = %s\n", buf0);
- // getFileTag(fd, "language", buf1, 4);
- // printf(1, "buf1 = %s\n", buf1);
- // getFileTag(fd, "school", buf2, 3);
- // printf(1, "buf2 = %s\n", buf2);
- // getFileTag(fd, "Game", buf3, 4);
- // printf(1, "buf3 = %s\n", buf3);
- // close(fd);
- // char results[5];
- // int cnt = getFilesByTag("Game", "CUBA", 4, results, 5);
- // printf(1, "cnt = %d\n", cnt);
- // printf(1, "results = %s\n", results);
- fd = open("ls", O_RDONLY);
-
- struct Key keys[16];
- int numTags = getAllTags(fd, keys, 16);
- if(numTags < 0){
-   exit();
- }
-
- if(numTags > 16){
-   numTags = 16;
- }
- char buffer[18];
- int i;
- printf(1, "Here is a list of this file's tags:\n");
- for(i = 0; i < numTags; i++){
-   int res = getFileTag(fd, keys[i].key, buffer, 18);
-   if(res > 0){
-     printf(1, "%s: %s\n", keys[i].key, buffer);
-   }
- }
- close(fd);
-
- exit();
+    const char * key[3];
+    const char * vals[3];
+    int fd = open("ls", O_RDWR);
+    int res;
+    key[0] = "type1";
+    vals[0] = "utility1";
+    res = tagFile(fd, key[0], vals[0], len);  
+    assert(res > 0);
+    key[1] = "type2";
+    vals[1] = "utility2";
+    res = tagFile(fd, key[1], vals[1], len);  
+    assert(res > 0);
+    key[2] = "type3";
+    vals[2] = "utility3";
+    res = tagFile(fd, key[2], vals[2], len);  
+    assert(res > 0);
+    struct Key keys[3];
+    int numTags = getAllTags(fd, keys, 3);
+    assert(numTags == 3);
+    int i, j;
+    const char * buffer_val;
+    for(i = 0; i < numTags; i++){
+        char buffer[8];
+        expected_val = vals[i];
+        int len = getFileTag(fd, keys[i].key, buffer, 8);
+        assert(len > 8);
+        for (j = 0; j < len; j++) {
+            char v_actual = buffer[j];
+            assert(v_actual == expected_val[j]);
+        }
+    }
+    close(fd);
+    printf(1, "getAllTags test passed\n");
+    exit();
 }
