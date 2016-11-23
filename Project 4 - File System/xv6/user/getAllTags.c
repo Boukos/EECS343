@@ -7,13 +7,25 @@
 #define O_RDWR 0x002
 #define O_CREATE 0x200
 
+int ppid;
+
+#define assert(x) if (x) {} else { \
+   printf(1, "%s: %d ", __FILE__, __LINE__); \
+   printf(1, "assert failed (%s)\n", # x); \
+   printf(1, "TEST FAILED\n"); \
+   kill(ppid); \
+   exit(); \
+}
+
 int
 main(int argc, char *argv[])
 {
-    const char * key[3];
-    const char * vals[3];
+    ppid = getpid();
+    char * key[3];
+    char * vals[3];
     int fd = open("ls", O_RDWR);
     int res;
+    int len = 8;
     key[0] = "type1";
     vals[0] = "utility1";
     res = tagFile(fd, key[0], vals[0], len);  
@@ -28,12 +40,13 @@ main(int argc, char *argv[])
     assert(res > 0);
     struct Key keys[3];
     int numTags = getAllTags(fd, keys, 3);
+    printf(1, "numTags = %d\n", numTags);
     assert(numTags == 3);
     int i, j;
-    const char * buffer_val;
+    // const char * buffer_val;
     for(i = 0; i < numTags; i++){
         char buffer[8];
-        expected_val = vals[i];
+        char * expected_val = vals[i];
         int len = getFileTag(fd, keys[i].key, buffer, 8);
         assert(len > 8);
         for (j = 0; j < len; j++) {

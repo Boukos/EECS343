@@ -7,9 +7,20 @@
 #define O_RDWR 0x002
 #define O_CREATE 0x200
 
+int ppid;
+
+#define assert(x) if (x) {} else { \
+   printf(1, "%s: %d ", __FILE__, __LINE__); \
+   printf(1, "assert failed (%s)\n", # x); \
+   printf(1, "TEST FAILED\n"); \
+   kill(ppid); \
+   exit(); \
+}
+
 int
 main(int argc, char *argv[])
 {
+ ppid = getpid();
  int fd = open("ls", O_RDWR);
  tagFile(fd, "type", "utility", 7);
  tagFile(fd, "type", "xmanxma", 7);
@@ -47,6 +58,9 @@ main(int argc, char *argv[])
  if(numTags < 0){
    exit();
  }
+  
+ printf(1, "numTags = %d\n", numTags);
+ assert(numTags == 4);
 
  if(numTags > 16){
    numTags = 16;

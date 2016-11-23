@@ -7,13 +7,25 @@
 #define O_RDWR 0x002
 #define O_CREATE 0x200
 
+int ppid;
+
+#define assert(x) if (x) {} else { \
+   printf(1, "%s: %d ", __FILE__, __LINE__); \
+   printf(1, "assert failed (%s)\n", # x); \
+   printf(1, "TEST FAILED\n"); \
+   kill(ppid); \
+   exit(); \
+}
+
 int
 main(int argc, char *argv[])
 {
+    ppid = getpid();
     int fd, res;
     fd = open("ls", O_RDWR);
     char * key = "type1";
     char * val = "utility1";
+    int len = 8;
     res = tagFile(fd, key, val, len);  
     assert(res > 0);
     key = "type2";
