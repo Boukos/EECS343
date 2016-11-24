@@ -827,18 +827,22 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
   char *filename;
   int filenameLength = 0;
   memset((void*)results, 0, (uint)resultsLength);
-  ilock(f->ip);
+  // f->ip->ref = 1;
+  // ilock(f->ip);
   // if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   if (!f->ip->tags) return 0;
   bp = bread(f->ip->dev, f->ip->tags);
   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
   brelse(bp);
-
-  iunlock(f->ip);
-
+  // iunlock(f->ip);
+  // f->ip->ref = 0;
+  cprintf("str = %s\n", (char*)str);
+  cprintf("key = %s\n", (char*)str);
   if ((keyPos = searchKey((uchar*)key, (uchar*)str)) >= 0) {
     valueLengthActual = 17;
-    valueActual = (char*)((uint)keyPos + 10);
+    valueActual = (char*)((uint)str + (uint)keyPos + 10);
+    cprintf("keyPos = %s\n", (char*)keyPos);
+    cprintf("valueActual = %s\n", valueActual);
     while (valueLengthActual >= 0 && !valueActual[valueLengthActual]) valueLengthActual--;
     valueLengthActual++;
     if (valueLengthActual == valueLength) {
@@ -850,11 +854,15 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
           while (k >= 0 && !results[k]) k--;
           k++;
           if (k) k++;
+          cprintf("k = %d\n", k);
           filename = de->name;
           filenameLength = strlen(filename);
           if (resultsLength - k >= filenameLength) {
+            cprintf("filename = %s\n", filename);
+            cprintf("filenameLength = %d\n", filenameLength);
             memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
             results[filenameLength] = 0;
+            cprintf("strlen(results) = %d\n", strlen(results));
             return 1;
           }
         }

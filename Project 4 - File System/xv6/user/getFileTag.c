@@ -51,11 +51,11 @@ main(int argc, char *argv[])
    // printf(1, "buf3 = %s\n", buf3);
    // close(fd);
 
-   char results[1024];
-   int cnt = getFilesByTag("type", "yeildxxx", 8, results, 1024);
+   char results[10];
+   int cnt = getFilesByTag("type", "yeildxxx", 8, results, 10);
    printf(1, "cnt = %d\n", cnt);
    printf(1, "results = %s\n", results);
-
+   printf(1, "strlen(results) = %d\n", strlen(results));
    printf(1, "TEST PASSED\n");
    exit();
 }

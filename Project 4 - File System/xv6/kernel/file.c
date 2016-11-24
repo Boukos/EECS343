@@ -131,8 +131,9 @@ getFilesByTag(char* key, char* value, int valueLength, char* results, int result
   struct file *f;
   acquire(&ftable.lock);
   for (f = ftable.file; f < ftable.file + NFILE; f++) {
-    if (f->ref && f->readable && f->type == FD_INODE) {
+    if (f->ip) {
       i += readBuf(f, key, value, valueLength, results, resultsLength);
+      cprintf("getFilesByTag: strlen(results) = %d\n", strlen(results));
     }
   }
   release(&ftable.lock);
