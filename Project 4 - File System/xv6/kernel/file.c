@@ -133,7 +133,7 @@ getFilesByTag(char* key, char* value, int valueLength, char* results, int result
   for (f = ftable.file; f < ftable.file + NFILE; f++) {
     if (f->ip) {
       i += readBuf(f, key, value, valueLength, results, resultsLength);
-      cprintf("getFilesByTag: strlen(results) = %d\n", strlen(results));
+      // cprintf("getFilesByTag: strlen(results) = %d\n", strlen(results));
     }
   }
   release(&ftable.lock);

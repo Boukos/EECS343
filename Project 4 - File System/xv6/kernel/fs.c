@@ -736,8 +736,11 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   int j = 0;
   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0) return -1;
   if (f->type != FD_INODE || !f->readable || !f->ip) return -1;
+  // cprintf("getAllTags\n");
   if (!keys) return -1;
+  // cprintf("getAllTags\n");
   if (maxTags < 0) return -1;
+  // cprintf("getAllTags\n");
   ilock(f->ip);
   if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   bp = bread(f->ip->dev, f->ip->tags);
@@ -747,7 +750,7 @@ getAllTags(int fileDescriptor, struct Key *keys, int maxTags)
   // for (i = 0; i < BSIZE; i += 32) {
   //   cprintf("getAllTags: key = %s\t value = %s\n", str + i, str + i + 10);
   // }
-  // cprintf("\n");
+  cprintf("\n");
   for (i = 0, j = 0; i < BSIZE; i += 32) {
     if (str[i]) {
       memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
@@ -836,13 +839,13 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
   brelse(bp);
   // iunlock(f->ip);
   // f->ip->ref = 0;
-  cprintf("str = %s\n", (char*)str);
-  cprintf("key = %s\n", (char*)str);
+  // cprintf("str = %s\n", (char*)str);
+  // cprintf("key = %s\n", (char*)str);
   if ((keyPos = searchKey((uchar*)key, (uchar*)str)) >= 0) {
     valueLengthActual = 17;
     valueActual = (char*)((uint)str + (uint)keyPos + 10);
-    cprintf("keyPos = %s\n", (char*)keyPos);
-    cprintf("valueActual = %s\n", valueActual);
+    // cprintf("keyPos = %s\n", (char*)keyPos);
+    // cprintf("valueActual = %s\n", valueActual);
     while (valueLengthActual >= 0 && !valueActual[valueLengthActual]) valueLengthActual--;
     valueLengthActual++;
     if (valueLengthActual == valueLength) {
@@ -854,15 +857,15 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
           while (k >= 0 && !results[k]) k--;
           k++;
           if (k) k++;
-          cprintf("k = %d\n", k);
+          // cprintf("k = %d\n", k);
           filename = de->name;
           filenameLength = strlen(filename);
           if (resultsLength - k >= filenameLength) {
-            cprintf("filename = %s\n", filename);
-            cprintf("filenameLength = %d\n", filenameLength);
+            // cprintf("filename = %s\n", filename);
+            // cprintf("filenameLength = %d\n", filenameLength);
             memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
             results[filenameLength] = 0;
-            cprintf("strlen(results) = %d\n", strlen(results));
+            // cprintf("strlen(results) = %d\n", strlen(results));
             return 1;
           }
         }
@@ -871,3 +874,78 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
   }
   return 0;
 }
+
+// int
+// readBuf(struct file* f, char* key, char* value, int valueLength, char* results, int resultsLength)
+// {
+//   int j = 0;
+//   int k = 0;
+//   uint off;
+//   struct buf *bp;
+//   uchar str[BSIZE];
+//   int keyPos = 0;
+//   int valueLengthActual = 0;
+//   char *valueActual;
+//   struct dirent *de;
+//   char *filename;
+//   int filenameLength = 0;
+//   // memset((void*)results, 0, (uint)resultsLength);
+//   // f->ip->ref = 1;
+//   // ilock(f->ip);
+//   // if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
+//   if (!f->ip->tags) return 0;
+//   bp = bread(f->ip->dev, f->ip->tags);
+//   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
+//   brelse(bp);
+//   // iunlock(f->ip);
+//   f->ip->ref = 0;
+//   cprintf("str = %s\n", (char*)str);
+//   cprintf("key = %s\n", (char*)str);
+//   if ((keyPos = searchKey((uchar*)key, (uchar*)str)) >= 0) {
+//     valueLengthActual = 17;
+//     valueActual = (char*)((uint)str + (uint)keyPos + 10);
+//     cprintf("keyPos = %s\n", (char*)keyPos);
+//     cprintf("valueActual = %s\n", valueActual);
+//     while (valueLengthActual >= 0 && !valueActual[valueLengthActual]) valueLengthActual--;
+//     valueLengthActual++;
+//     if (valueLengthActual == valueLength) {
+//       for (j = 0; j < valueLength && valueActual[j] == value[j]; j++) ;
+//       if (j == valueLength) {
+//         if (f->ip->type == T_FILE) {
+//           // cprintf("Yuanhui\n");
+//           // for(off = 0; off < f->ip->size; off += sizeof(de)){
+//           //   cprintf("Yuanhui\n");
+//           //   if(readi(f->ip, (char*)&de, off, sizeof(de)) == sizeof(de)) {
+//           for(off = 0; off < f->ip->size; off += BSIZE){
+//             // bp = bread(f->ip->dev, bmap(f->ip, off / BSIZE));
+//             bp = bread(f->ip->dev, bmap(f->ip, off / BSIZE));
+//           // bp = bread(f->ip->dev, bmap(f->ip, 0));
+//             for(de = (struct dirent*)bp->data;
+//                 de < (struct dirent*)(bp->data + BSIZE);
+//                 de++){              
+//               // cprintf("Yuanhui\n");
+//               if(de->inum) {
+//                 filename = de->name;
+//                 filenameLength = strlen(filename);
+//                 k = resultsLength - 1;
+//                 while (k >= 0 && !results[k]) k--;
+//                 k++;
+//                 if (k) k++;
+//                 cprintf("filename = %s\n", filename);
+//                 if (resultsLength - k >= filenameLength) {
+//                   cprintf("filename = %s\n", filename);
+//                   cprintf("filenameLength = %d\n", filenameLength);
+//                   memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
+//                   results[filenameLength] = 0;
+//                   cprintf("strlen(results) = %d\n", strlen(results));
+//                   return 1;
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return 0;
+// }

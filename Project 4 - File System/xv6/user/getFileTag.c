@@ -36,6 +36,10 @@ main(int argc, char *argv[])
    // tagFile(fd, "Game", "CUBA", 4);
    close(fd);
 
+   int fd1 = open("README", O_RDWR);
+   tagFile(fd, "type", "yeildxxx", 8);
+   close(fd1);
+
    // fd = open("ls", O_RDONLY);
    // char buf0[8];
    // char buf1[4];
