@@ -826,36 +826,26 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
   struct dirent *de;
   char *filename;
   int filenameLength = 0;
-  cprintf("-6\n");
   memset((void*)results, 0, (uint)resultsLength);
-  cprintf("-5\n");
   ilock(f->ip);
-  cprintf("-4\n");
   // if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
   if (!f->ip->tags) return 0;
-  cprintf("-3\n");
   bp = bread(f->ip->dev, f->ip->tags);
-  cprintf("-2\n");
   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
-  cprintf("-1\n");
   brelse(bp);
-  cprintf("0\n");
+
   iunlock(f->ip);
-  cprintf("1\n");
+
   if ((keyPos = searchKey((uchar*)key, (uchar*)str)) >= 0) {
     valueLengthActual = 17;
     valueActual = (char*)((uint)keyPos + 10);
     while (valueLengthActual >= 0 && !valueActual[valueLengthActual]) valueLengthActual--;
     valueLengthActual++;
-    cprintf("2\n");
     if (valueLengthActual == valueLength) {
-      cprintf("3\n");
       for (j = 0; j < valueLength && valueActual[j] == value[j]; j++) ;
       if (j == valueLength) {
-        cprintf("4\n");
         de = (struct dirent*)str;
         if (de->inum) {
-          cprintf("5\n");
           k = resultsLength - 1;
           while (k >= 0 && !results[k]) k--;
           k++;
@@ -863,7 +853,6 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
           filename = de->name;
           filenameLength = strlen(filename);
           if (resultsLength - k >= filenameLength) {
-            cprintf("6\n");
             memmove((void*)((uint)results + (uint)k), (void*)filename, (uint)filenameLength);
             results[filenameLength] = 0;
             return 1;

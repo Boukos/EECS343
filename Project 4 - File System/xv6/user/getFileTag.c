@@ -25,34 +25,34 @@ int
 main(int argc, char *argv[])
 {
    int fd = open("ls", O_RDWR);
-   tagFile(fd, "type", "utility", 7);
-   tagFile(fd, "type", "xmanxma", 7);
+   // tagFile(fd, "type", "utility", 7);
+   // tagFile(fd, "type", "xmanxma", 7);
    tagFile(fd, "type", "yeildxxx", 8);
-   tagFile(fd, "language", "English", 7);
-   tagFile(fd, "language", "Java", 4);
-   tagFile(fd, "school", "Stanford", 8);
-   tagFile(fd, "school", "MIT", 3);
-   tagFile(fd, "Game", "NBA", 3);
-   tagFile(fd, "Game", "CUBA", 4);
+   // tagFile(fd, "language", "English", 7);
+   // tagFile(fd, "language", "Java", 4);
+   // tagFile(fd, "school", "Stanford", 8);
+   // tagFile(fd, "school", "MIT", 3);
+   // tagFile(fd, "Game", "NBA", 3);
+   // tagFile(fd, "Game", "CUBA", 4);
    close(fd);
 
-   fd = open("ls", O_RDONLY);
-   char buf0[8];
-   char buf1[4];
-   char buf2[3];
-   char buf3[4];
-   getFileTag(fd, "type", buf0, 8);
-   printf(1, "buf0 = %s\n", buf0);
-   getFileTag(fd, "language", buf1, 4);
-   printf(1, "buf1 = %s\n", buf1);
-   getFileTag(fd, "school", buf2, 3);
-   printf(1, "buf2 = %s\n", buf2);
-   getFileTag(fd, "Game", buf3, 4);
-   printf(1, "buf3 = %s\n", buf3);
-   close(fd);
+   // fd = open("ls", O_RDONLY);
+   // char buf0[8];
+   // char buf1[4];
+   // char buf2[3];
+   // char buf3[4];
+   // getFileTag(fd, "type", buf0, 8);
+   // printf(1, "buf0 = %s\n", buf0);
+   // getFileTag(fd, "language", buf1, 4);
+   // printf(1, "buf1 = %s\n", buf1);
+   // getFileTag(fd, "school", buf2, 3);
+   // printf(1, "buf2 = %s\n", buf2);
+   // getFileTag(fd, "Game", buf3, 4);
+   // printf(1, "buf3 = %s\n", buf3);
+   // close(fd);
 
    char results[1024];
-   int cnt = getFilesByTag("Game", "CUBA", 4, results, 1024);
+   int cnt = getFilesByTag("type", "yeildxxx", 8, results, 1024);
    printf(1, "cnt = %d\n", cnt);
    printf(1, "results = %s\n", results);
 
