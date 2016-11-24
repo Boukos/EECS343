@@ -826,7 +826,7 @@ readBuf(struct file* f, char* key, char* value, int valueLength, char* results, 
   struct dirent *de;
   char *filename;
   int filenameLength = 0;
-  memset((void*)results, 0, (uint)resultsLength);
+  // memset((void*)results, 0, (uint)resultsLength);
   // f->ip->ref = 1;
   // ilock(f->ip);
   // if (!f->ip->tags) f->ip->tags = balloc(f->ip->dev);
