@@ -36,7 +36,7 @@ main(int argc, char *argv[])
    // tagFile(fd, "Game", "CUBA", 4);
    close(fd);
 
-   int fd1 = open("README", O_RDWR);
+   int fd1 = open("wc", O_RDWR);
    tagFile(fd, "type", "yeildxxx", 8);
    close(fd1);
 
